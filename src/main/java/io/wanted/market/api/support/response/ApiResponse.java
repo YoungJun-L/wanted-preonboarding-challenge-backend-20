@@ -1,7 +1,7 @@
 package io.wanted.market.api.support.response;
 
-import io.wanted.market.api.support.error.ErrorMessage;
-import io.wanted.market.api.support.error.ErrorType;
+import io.wanted.market.domain.error.CoreErrorMessage;
+import io.wanted.market.domain.error.CoreErrorType;
 import lombok.Getter;
 
 @Getter
@@ -10,9 +10,9 @@ public class ApiResponse<T> {
 
     private final T data;
 
-    private final ErrorMessage error;
+    private final CoreErrorMessage error;
 
-    private ApiResponse(StatusType status, T data, ErrorMessage error) {
+    private ApiResponse(StatusType status, T data, CoreErrorMessage error) {
         this.status = status;
         this.data = data;
         this.error = error;
@@ -26,11 +26,11 @@ public class ApiResponse<T> {
         return new ApiResponse<>(StatusType.SUCCESS, data, null);
     }
 
-    public static ApiResponse<Void> error(ErrorType errorType) {
-        return new ApiResponse<>(StatusType.ERROR, null, new ErrorMessage(errorType));
+    public static ApiResponse<Void> error(CoreErrorType coreErrorType) {
+        return new ApiResponse<>(StatusType.ERROR, null, new CoreErrorMessage(coreErrorType));
     }
 
-    public static ApiResponse<Void> error(ErrorType errorType, Object data) {
-        return new ApiResponse<>(StatusType.ERROR, null, new ErrorMessage(errorType, data));
+    public static ApiResponse<Void> error(CoreErrorType coreErrorType, Object data) {
+        return new ApiResponse<>(StatusType.ERROR, null, new CoreErrorMessage(coreErrorType, data));
     }
 }

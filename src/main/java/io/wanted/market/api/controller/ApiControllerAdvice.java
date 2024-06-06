@@ -1,8 +1,8 @@
 package io.wanted.market.api.controller;
 
-import io.wanted.market.api.support.error.ApiException;
-import io.wanted.market.api.support.error.ErrorType;
 import io.wanted.market.api.support.response.ApiResponse;
+import io.wanted.market.domain.error.CoreErrorType;
+import io.wanted.market.domain.error.CoreException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +23,24 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @Slf4j
 @RestControllerAdvice
 public class ApiControllerAdvice {
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiResponse<?>> handleApiException(ApiException ex) {
-        switch (ex.getErrorType().getLogLevel()) {
-            case ERROR -> log.error("CoreApiException : {}", ex.getMessage(), ex);
-            case WARN -> log.warn("CoreApiException : {}", ex.getMessage(), ex);
-            default -> log.info("CoreApiException : {}", ex.getMessage(), ex);
+    @ExceptionHandler(CoreException.class)
+    public ResponseEntity<ApiResponse<?>> handleApiException(CoreException ex) {
+        switch (ex.getCoreErrorType().getLogLevel()) {
+            case ERROR -> log.error("ApiException : {}", ex.getMessage(), ex);
+            case WARN -> log.warn("ApiException : {}", ex.getMessage(), ex);
+            default -> log.info("ApiException : {}", ex.getMessage(), ex);
         }
+
+        HttpStatus status = switch (ex.getCoreErrorType()) {
+            case DEFAULT_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case FORBIDDEN_ERROR -> HttpStatus.FORBIDDEN;
+            case NOT_FOUND_ERROR -> HttpStatus.NOT_FOUND;
+            default -> HttpStatus.BAD_REQUEST;
+        };
+
         return ResponseEntity
-                .status(ex.getErrorType().getStatus())
-                .body(ApiResponse.error(ex.getErrorType(), ex.getData()));
+                .status(status)
+                .body(ApiResponse.error(ex.getCoreErrorType(), ex.getData()));
     }
 
     @ExceptionHandler({
@@ -51,7 +59,7 @@ public class ApiControllerAdvice {
         log.debug("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ErrorType.BAD_REQUEST_ERROR));
+                .body(ApiResponse.error(CoreErrorType.BAD_REQUEST_ERROR));
     }
 
     @ExceptionHandler({
@@ -62,14 +70,14 @@ public class ApiControllerAdvice {
         log.debug("NotFound: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(ErrorType.NOT_FOUND_ERROR));
+                .body(ApiResponse.error(CoreErrorType.NOT_FOUND_ERROR));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(Exception ex) {
         log.error("Exception: {}", ex.getMessage(), ex);
         return ResponseEntity
-                .status(ErrorType.DEFAULT_ERROR.getStatus())
-                .body(ApiResponse.error(ErrorType.DEFAULT_ERROR));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(CoreErrorType.DEFAULT_ERROR));
     }
 }
