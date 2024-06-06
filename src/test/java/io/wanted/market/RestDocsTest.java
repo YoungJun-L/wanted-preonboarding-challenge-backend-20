@@ -3,6 +3,7 @@ package io.wanted.market;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -12,13 +13,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
+@Tag("restdocs")
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class RestDocsTest {
     protected MockMvc mockMvc;
 
+    protected ObjectMapper objectMapper = objectMapper();
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider provider) {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper());
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
 
         mockMvc = MockMvcBuilders.standaloneSetup(initController())
                 .apply(documentationConfiguration(provider))
