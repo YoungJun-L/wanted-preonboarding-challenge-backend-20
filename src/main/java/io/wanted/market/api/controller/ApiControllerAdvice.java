@@ -1,8 +1,8 @@
-package io.wanted.market.support.controller;
+package io.wanted.market.api.controller;
 
-import io.wanted.market.support.error.ApiException;
-import io.wanted.market.support.error.ErrorType;
-import io.wanted.market.support.response.ApiResponse;
+import io.wanted.market.api.support.error.ApiException;
+import io.wanted.market.api.support.error.ErrorType;
+import io.wanted.market.api.support.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

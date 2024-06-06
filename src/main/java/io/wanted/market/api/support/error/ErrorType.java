@@ -1,4 +1,4 @@
-package io.wanted.market.support.error;
+package io.wanted.market.api.support.error;
 
 import lombok.Getter;
 import org.springframework.boot.logging.LogLevel;

@@ -1,4 +1,4 @@
-package io.wanted.market.support.controller;
+package io.wanted.market.api.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
