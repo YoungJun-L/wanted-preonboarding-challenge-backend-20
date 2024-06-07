@@ -20,8 +20,7 @@ public class UserReader {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new CoreException(USER_NOT_FOUND_ERROR));
 
-        String encodedPassword = passwordEncoder.encode(password);
-        if (user.isNotMatchedPassword(encodedPassword)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CoreException(USER_WRONG_PASSWORD_ERROR);
         }
         return user;

@@ -24,13 +24,10 @@ public class User extends BaseEntity {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.status = UserStatus.ENABLED;
     }
 
     public boolean isBanned() {
         return status.equals(UserStatus.BANNED);
-    }
-
-    public boolean isNotMatchedPassword(String encodedPassword) {
-        return !this.password.equals(encodedPassword);
     }
 }

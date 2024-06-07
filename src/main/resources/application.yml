@@ -30,6 +30,13 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
 
+  security:
+    jwt:
+      secret-key: secret-key012345678secret-key0123456789secret-key0123456789secret-key01234567899
+      exp:
+        access: 3600000
+        refresh: 1209600000
+
 ---
 spring.config.activate.on-profile: dev
 
@@ -58,3 +65,10 @@ spring:
         cacheServerConfiguration: true
         elideSetAutoCommits: true
         maintainTimeStats: false
+
+  security:
+    jwt:
+      secret-key: secret-key012345678secret-key0123456789secret-key0123456789secret-key01234567899
+      exp:
+        access: 3600000
+        refresh: 1209600000
