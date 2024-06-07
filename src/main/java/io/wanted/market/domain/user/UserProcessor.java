@@ -4,6 +4,7 @@ import io.wanted.market.domain.error.CoreErrorType;
 import io.wanted.market.domain.error.CoreException;
 import io.wanted.market.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -11,12 +12,15 @@ import org.springframework.stereotype.Component;
 public class UserProcessor {
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public Long add(String username, String password) {
         if (userRepository.existsByUsername(username)) {
             throw new CoreException(CoreErrorType.USER_DUPLICATE_ERROR);
         }
 
-        User user = new User(username, password);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(username, encodedPassword);
         userRepository.save(user);
         return user.getId();
     }

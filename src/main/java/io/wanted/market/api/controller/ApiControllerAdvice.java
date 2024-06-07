@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -46,20 +45,26 @@ public class ApiControllerAdvice {
     @ExceptionHandler({
             IllegalArgumentException.class,
             HttpRequestMethodNotSupportedException.class,
-            MethodArgumentNotValidException.class,
             MissingServletRequestParameterException.class,
             MissingServletRequestPartException.class,
             MethodArgumentTypeMismatchException.class,
             HttpMessageNotReadableException.class,
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
-            BindException.class,
     })
     public ResponseEntity<ApiResponse<?>> handleBadRequest(final Exception ex) {
-        log.debug("Bad Request: {}", ex.getMessage());
+        log.warn("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(CoreErrorType.BAD_REQUEST_ERROR));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+        log.warn("Bad Request: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(CoreErrorType.BAD_REQUEST_ERROR, ex.getFieldErrors().get(0).getField()));
     }
 
     @ExceptionHandler({

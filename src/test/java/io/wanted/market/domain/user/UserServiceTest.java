@@ -7,6 +7,7 @@ import io.wanted.market.repository.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -18,9 +19,12 @@ class UserServiceTest extends ContextTest {
 
     private final UserRepository userRepository;
 
-    UserServiceTest(UserService userService, UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    UserServiceTest(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @AfterEach
@@ -28,7 +32,7 @@ class UserServiceTest extends ContextTest {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("가입 성공")
+    @DisplayName("회원가입 성공")
     @Test
     void register() {
         // given
@@ -44,7 +48,7 @@ class UserServiceTest extends ContextTest {
         assertThat(actual.get().getUsername()).isEqualTo(username);
     }
 
-    @DisplayName("가입 시 아이디가 중복되면 실패한다.")
+    @DisplayName("회원가입 시 아이디가 중복되면 실패한다.")
     @Test
     void registerWithDuplicateUsername() {
         // given
@@ -54,5 +58,21 @@ class UserServiceTest extends ContextTest {
         // when & then
         CoreException ex = assertThrows(CoreException.class, () -> userService.register("username", "password"));
         assertThat(ex.getCoreErrorType()).isEqualTo(CoreErrorType.USER_DUPLICATE_ERROR);
+    }
+
+    @DisplayName("회원가입 시 비밀번호는 인코딩된다.")
+    @Test
+    void registerShouldEncodePassword() {
+        // given
+        String username = "username";
+        String password = "password";
+
+        // when
+        userService.register(username, password);
+
+        // then
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        assertThat(optionalUser).isNotEmpty();
+        assertThat(passwordEncoder.matches(password, optionalUser.get().getPassword())).isTrue();
     }
 }
