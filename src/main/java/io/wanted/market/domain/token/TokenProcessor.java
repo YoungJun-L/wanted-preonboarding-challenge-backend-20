@@ -15,7 +15,7 @@ public class TokenProcessor {
         if (tokenRepository.existsByUserId(tokenPair.userId())) {
             tokenRepository.deleteByUserId(tokenPair.userId());
         }
-        Token token = TokenPair.toToken(tokenPair);
+        Token token = tokenPair.toEntity();
         tokenRepository.save(token);
         return token.getId();
     }

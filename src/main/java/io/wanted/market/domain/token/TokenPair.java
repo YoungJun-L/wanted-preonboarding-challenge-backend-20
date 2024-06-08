@@ -7,7 +7,7 @@ public record TokenPair(
         String refreshToken,
         Long refreshTokenExpiresIn
 ) {
-    public static Token toToken(TokenPair tokenPair) {
-        return new Token(tokenPair.userId, tokenPair.refreshToken);
+    public Token toEntity() {
+        return new Token(userId, refreshToken);
     }
 }
