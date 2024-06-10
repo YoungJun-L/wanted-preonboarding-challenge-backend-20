@@ -10,7 +10,7 @@ public class UserService {
 
     private final UserValidator userValidator;
 
-    private final UserProcessor userProcessor;
+    private final UserWriter userWriter;
 
     public Long validate(String username, String password) {
         User user = userReader.read(username, password);
@@ -19,6 +19,6 @@ public class UserService {
     }
 
     public void register(String username, String password) {
-        userProcessor.add(username, password);
+        userWriter.write(username, password);
     }
 }

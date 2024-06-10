@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class UserProcessor {
+public class UserWriter {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public Long add(String username, String password) {
+    public Long write(String username, String password) {
         if (userRepository.existsByUsername(username)) {
             throw new CoreException(CoreErrorType.USER_DUPLICATE_ERROR);
         }

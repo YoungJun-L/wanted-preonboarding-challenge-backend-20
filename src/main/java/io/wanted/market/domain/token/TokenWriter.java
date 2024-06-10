@@ -7,11 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
-public class TokenProcessor {
+public class TokenWriter {
     private final TokenRepository tokenRepository;
 
     @Transactional
-    public Long add(TokenPair tokenPair) {
+    public Long write(TokenPair tokenPair) {
         if (tokenRepository.existsByUserId(tokenPair.userId())) {
             tokenRepository.deleteByUserId(tokenPair.userId());
         }
