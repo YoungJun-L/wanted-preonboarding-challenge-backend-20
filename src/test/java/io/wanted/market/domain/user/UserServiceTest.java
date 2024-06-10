@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceTest extends ContextTest {
@@ -70,5 +71,37 @@ class UserServiceTest extends ContextTest {
         Optional<User> optionalUser = userRepository.findByUsername(VALID_USERNAME);
         assertThat(optionalUser).isNotEmpty();
         assertThat(passwordEncoder.matches(VALID_PASSWORD, optionalUser.get().getPassword())).isTrue();
+    }
+
+    @DisplayName("회원 검증 성공")
+    @Test
+    void validate() {
+        // given
+        String encodedPassword = passwordEncoder.encode(VALID_PASSWORD);
+        User user = new User(VALID_USERNAME, encodedPassword);
+        userRepository.save(user);
+
+        // when & then
+        assertDoesNotThrow(() -> userService.validate(VALID_USERNAME, VALID_PASSWORD));
+    }
+
+    @DisplayName("가입하지 않은 회원을 검증 시 실패한다.")
+    @Test
+    void validateNotRegistered() {
+        // given & when & then
+        CoreException ex = assertThrows(CoreException.class, () -> userService.validate(VALID_USERNAME, VALID_PASSWORD));
+        assertThat(ex.getCoreErrorType()).isEqualTo(CoreErrorType.USER_NOT_FOUND_ERROR);
+    }
+
+    @DisplayName("비밀번호가 일치하지 않으면 검증 시 실패한다.")
+    @Test
+    void validateNotMatchedPassword() {
+        // given
+        User user = new User(VALID_USERNAME, VALID_PASSWORD);
+        userRepository.save(user);
+
+        // when & then
+        CoreException ex = assertThrows(CoreException.class, () -> userService.validate(VALID_USERNAME, "wrongPassword"));
+        assertThat(ex.getCoreErrorType()).isEqualTo(CoreErrorType.USER_WRONG_PASSWORD_ERROR);
     }
 }
