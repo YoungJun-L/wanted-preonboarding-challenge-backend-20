@@ -15,6 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceTest extends ContextTest {
+    private static final String VALID_USERNAME = "username123";
+
+    private static final String VALID_PASSWORD = "password123!";
+
     private final UserService userService;
 
     private final UserRepository userRepository;
@@ -35,44 +39,36 @@ class UserServiceTest extends ContextTest {
     @DisplayName("회원가입 성공")
     @Test
     void register() {
-        // given
-        String username = "username";
-        String password = "password";
-
-        // when
-        userService.register(username, password);
+        // given & when
+        userService.register(VALID_USERNAME, VALID_PASSWORD);
 
         // then
-        Optional<User> actual = userRepository.findByUsername(username);
+        Optional<User> actual = userRepository.findByUsername(VALID_USERNAME);
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get().getUsername()).isEqualTo(username);
+        assertThat(actual.get().getUsername()).isEqualTo(VALID_USERNAME);
     }
 
     @DisplayName("회원가입 시 아이디가 중복되면 실패한다.")
     @Test
     void registerWithDuplicateUsername() {
         // given
-        User user = new User("username", "password");
+        User user = new User(VALID_USERNAME, VALID_PASSWORD);
         userRepository.save(user);
 
         // when & then
-        CoreException ex = assertThrows(CoreException.class, () -> userService.register("username", "password"));
+        CoreException ex = assertThrows(CoreException.class, () -> userService.register(VALID_USERNAME, VALID_PASSWORD));
         assertThat(ex.getCoreErrorType()).isEqualTo(CoreErrorType.USER_DUPLICATE_ERROR);
     }
 
     @DisplayName("회원가입 시 비밀번호는 인코딩된다.")
     @Test
     void registerShouldEncodePassword() {
-        // given
-        String username = "username";
-        String password = "password";
-
-        // when
-        userService.register(username, password);
+        // given & when
+        userService.register(VALID_USERNAME, VALID_PASSWORD);
 
         // then
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(VALID_USERNAME);
         assertThat(optionalUser).isNotEmpty();
-        assertThat(passwordEncoder.matches(password, optionalUser.get().getPassword())).isTrue();
+        assertThat(passwordEncoder.matches(VALID_PASSWORD, optionalUser.get().getPassword())).isTrue();
     }
 }
