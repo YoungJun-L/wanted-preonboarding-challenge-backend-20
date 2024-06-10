@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 @Primary
 @Component
 public class StubTimeHolder implements TimeHolder {
+    private final Long now = System.currentTimeMillis();
+
     @Override
     public Long now() {
-        return 0L;
+        return now;
     }
 }
