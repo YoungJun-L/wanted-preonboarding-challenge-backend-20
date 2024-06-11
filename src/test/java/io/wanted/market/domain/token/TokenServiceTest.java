@@ -4,7 +4,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.wanted.market.ContextTest;
-import io.wanted.market.domain.support.TimeHolder;
+import io.wanted.market.domain.support.time.TimeHolder;
 import io.wanted.market.repository.token.TokenRepository;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.AfterEach;
@@ -13,12 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class TokenServiceTest extends ContextTest {
+    private static final String USER_ID = "userId";
+
     private final TokenService tokenService;
 
     private final TokenRepository tokenRepository;
@@ -26,6 +30,8 @@ class TokenServiceTest extends ContextTest {
     private final TimeHolder timeHolder;
 
     private final JwtParser jwtParser;
+
+    private final String refreshToken;
 
     TokenServiceTest(TokenService tokenService,
                      TokenRepository tokenRepository,
@@ -36,6 +42,14 @@ class TokenServiceTest extends ContextTest {
         this.tokenRepository = tokenRepository;
         this.timeHolder = timeHolder;
         this.jwtParser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes())).build();
+        this.refreshToken = Jwts
+                .builder()
+                .claims(Collections.emptyMap())
+                .subject(USER_ID)
+                .issuedAt(new Date(timeHolder.now()))
+                .expiration(new Date(timeHolder.now() + Duration.ofDays(30L).toMillis()))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .compact();
     }
 
     @AfterEach
@@ -46,14 +60,11 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 성공")
     @Test
     void issue() {
-        // given
-        String userId = "userId";
-
-        // when
-        TokenPair tokenPair = tokenService.issue(userId);
+        // given & when
+        TokenPair tokenPair = tokenService.issue(USER_ID);
 
         // then
-        assertThat(tokenPair.userId()).isEqualTo(userId);
+        assertThat(tokenPair.userId()).isEqualTo(USER_ID);
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
     }
@@ -61,14 +72,11 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 시 refresh token 이 저장된다.")
     @Test
     void issueShouldSaveRefreshToken() {
-        // given
-        String userId = "userId";
-
-        // when
-        TokenPair tokenPair = tokenService.issue(userId);
+        // given & when
+        TokenPair tokenPair = tokenService.issue(USER_ID);
 
         // then
-        List<Token> tokens = tokenRepository.findByUserId(userId);
+        List<Token> tokens = tokenRepository.findByUserId(USER_ID);
         assertThat(tokens).hasSize(1);
         assertThat(tokens.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
     }
@@ -76,11 +84,8 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 시 access token 은 30분간 유효하다.")
     @Test
     void issueAccessTokenValidFor30Minutes() {
-        // given
-        String userId = "userId";
-
-        // when
-        TokenPair tokenPair = tokenService.issue(userId);
+        // given & when
+        TokenPair tokenPair = tokenService.issue(USER_ID);
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
@@ -91,11 +96,8 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 시 refresh token 은 30일간 유효하다.")
     @Test
     void issueRefreshTokenValidFor30Days() {
-        // given
-        String userId = "userId";
-
-        // when
-        TokenPair tokenPair = tokenService.issue(userId);
+        // given & when
+        TokenPair tokenPair = tokenService.issue(USER_ID);
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
@@ -107,16 +109,15 @@ class TokenServiceTest extends ContextTest {
     @Test
     void issueShouldRemoveOldToken() {
         // given
-        String userId = "userId";
-        Token token = new Token(userId, "refreshToken");
+        Token token = new Token(USER_ID, refreshToken);
         tokenRepository.save(token);
 
         // when
-        TokenPair tokenPair = tokenService.issue(userId);
+        tokenService.issue(USER_ID);
 
         // then
-        List<Token> tokens = tokenRepository.findByUserId(userId);
+        List<Token> tokens = tokenRepository.findByUserId(USER_ID);
         assertThat(tokens).hasSize(1);
-        assertThat(tokens.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
+        assertThat(tokens.get(0).getId()).isNotEqualTo(token.getId());
     }
 }

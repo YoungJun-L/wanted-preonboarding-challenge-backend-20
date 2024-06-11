@@ -20,7 +20,7 @@ public class TokenService {
     private final UserValidator userValidator;
 
     public TokenPair issue(String userId) {
-        TokenPair tokenPair = tokenGenerator.generate(userId);
+        TokenPair tokenPair = tokenGenerator.issue(userId);
         tokenWriter.write(tokenPair);
         return tokenPair;
     }
@@ -29,7 +29,7 @@ public class TokenService {
         String userId = tokenParser.parseSubject(refreshToken);
         User user = userReader.read(Long.getLong(userId));
         userValidator.validate(user);
-        TokenPair tokenPair = tokenGenerator.generate(userId);
+        TokenPair tokenPair = tokenGenerator.reissue(userId, refreshToken);
         tokenWriter.write(tokenPair);
         return tokenPair;
     }

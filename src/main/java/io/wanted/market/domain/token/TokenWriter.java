@@ -12,6 +12,10 @@ public class TokenWriter {
 
     @Transactional
     public Long write(TokenPair tokenPair) {
+        if (tokenPair.refreshToken() == null) {
+            return null;
+        }
+
         if (tokenRepository.existsByUserId(tokenPair.userId())) {
             tokenRepository.deleteByUserId(tokenPair.userId());
         }

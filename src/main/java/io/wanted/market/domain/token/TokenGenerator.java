@@ -12,6 +12,8 @@ import java.util.Map;
 
 @Component
 public class TokenGenerator {
+    private static final Long ONE_WEEK_IN_MS = 604_800_000L;
+
     private final String secretKey;
 
     private final Long accessExp;
@@ -20,19 +22,23 @@ public class TokenGenerator {
 
     private final TimeHolder timeHolder;
 
+    private final TokenParser tokenParser;
+
     public TokenGenerator(
             @Value("${spring.security.jwt.secret-key}") String secretKey,
             @Value("${spring.security.jwt.exp.access}") Long accessExp,
             @Value("${spring.security.jwt.exp.refresh}") Long refreshExp,
-            TimeHolder timeHolder
-    ) {
+            TimeHolder timeHolder,
+            TokenParser tokenParser) {
         this.secretKey = secretKey;
         this.accessExp = accessExp;
         this.refreshExp = refreshExp;
         this.timeHolder = timeHolder;
+        this.tokenParser = tokenParser;
     }
 
-    public TokenPair generate(String subject) {
+
+    public TokenPair issue(String subject) {
         Long now = timeHolder.now();
         String accessToken = generateAccessToken(subject, now);
         String refreshToken = generateRefreshToken(subject, now);
@@ -42,6 +48,29 @@ public class TokenGenerator {
                 now + accessExp,
                 refreshToken,
                 now + refreshExp
+        );
+    }
+
+    public TokenPair reissue(String subject, String refreshToken) {
+        Long now = timeHolder.now();
+        String accessToken = generateAccessToken(subject, now);
+        Long expiration = tokenParser.parseExpiration(refreshToken);
+        if (now >= expiration - ONE_WEEK_IN_MS) {
+            String newRefreshToken = generateRefreshToken(subject, now);
+            return new TokenPair(
+                    subject,
+                    accessToken,
+                    now + accessExp,
+                    newRefreshToken,
+                    now + refreshExp
+            );
+        }
+        return new TokenPair(
+                subject,
+                accessToken,
+                now + accessExp,
+                null,
+                null
         );
     }
 
