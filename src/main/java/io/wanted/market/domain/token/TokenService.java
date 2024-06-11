@@ -27,7 +27,7 @@ public class TokenService {
 
     public TokenPair reissue(String refreshToken) {
         String userId = tokenParser.parseSubject(refreshToken);
-        User user = userReader.read(Long.getLong(userId));
+        User user = userReader.read(Long.valueOf(userId));
         userValidator.validate(user);
         TokenPair tokenPair = tokenGenerator.reissue(userId, refreshToken);
         tokenWriter.write(tokenPair);
