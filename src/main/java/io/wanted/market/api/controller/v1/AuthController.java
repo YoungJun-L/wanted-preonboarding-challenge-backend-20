@@ -1,7 +1,9 @@
 package io.wanted.market.api.controller.v1;
 
 import io.wanted.market.api.controller.v1.request.LoginRequestDto;
+import io.wanted.market.api.controller.v1.request.ReissueRequestDto;
 import io.wanted.market.api.controller.v1.response.LoginResponseDto;
+import io.wanted.market.api.controller.v1.response.TokenResponseDto;
 import io.wanted.market.api.support.response.ApiResponse;
 import io.wanted.market.domain.token.TokenPair;
 import io.wanted.market.domain.token.TokenService;
@@ -24,5 +26,11 @@ public class AuthController {
         Long userId = userService.validate(loginRequestDto.username(), loginRequestDto.password());
         TokenPair tokenPair = tokenService.issue(userId.toString());
         return ApiResponse.success(LoginResponseDto.from(tokenPair));
+    }
+
+    @PostMapping("/auth/reissue")
+    public ApiResponse<TokenResponseDto> reissue(@RequestBody @Valid ReissueRequestDto reissueRequestDto) {
+        TokenPair tokenPair = tokenService.reissue(reissueRequestDto.refreshToken());
+        return ApiResponse.success(TokenResponseDto.from(tokenPair));
     }
 }

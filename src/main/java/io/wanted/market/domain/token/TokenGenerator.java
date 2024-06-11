@@ -2,7 +2,7 @@ package io.wanted.market.domain.token;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.wanted.market.domain.support.TimeHolder;
+import io.wanted.market.domain.support.time.TimeHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
