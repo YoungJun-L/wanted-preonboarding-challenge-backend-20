@@ -1,8 +1,8 @@
 package io.wanted.market.domain.user;
 
 import io.wanted.market.ContextTest;
-import io.wanted.market.domain.error.CoreErrorType;
-import io.wanted.market.domain.error.CoreException;
+import io.wanted.market.domain.support.error.CoreErrorType;
+import io.wanted.market.domain.support.error.CoreException;
 import io.wanted.market.repository.user.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

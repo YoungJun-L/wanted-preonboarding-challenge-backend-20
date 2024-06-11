@@ -1,7 +1,7 @@
 package io.wanted.market.domain.user;
 
-import io.wanted.market.domain.error.CoreErrorType;
-import io.wanted.market.domain.error.CoreException;
+import io.wanted.market.domain.support.error.CoreErrorType;
+import io.wanted.market.domain.support.error.CoreException;
 import io.wanted.market.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,4 +1,4 @@
-package io.wanted.market.domain.support;
+package io.wanted.market.domain.support.time;
 
 import org.springframework.stereotype.Component;
 

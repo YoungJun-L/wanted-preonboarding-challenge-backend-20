@@ -1,4 +1,4 @@
-package io.wanted.market.domain.error;
+package io.wanted.market.domain.support.error;
 
 import lombok.Getter;
 

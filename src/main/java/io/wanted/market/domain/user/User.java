@@ -1,6 +1,6 @@
 package io.wanted.market.domain.user;
 
-import io.wanted.market.domain.support.BaseEntity;
+import io.wanted.market.domain.support.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

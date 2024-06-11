@@ -1,5 +1,6 @@
 package io.wanted.market.domain.support;
 
+import io.wanted.market.domain.support.time.TimeHolder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 

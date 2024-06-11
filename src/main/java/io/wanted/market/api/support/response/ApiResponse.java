@@ -1,7 +1,7 @@
 package io.wanted.market.api.support.response;
 
-import io.wanted.market.domain.error.CoreErrorMessage;
-import io.wanted.market.domain.error.CoreErrorType;
+import io.wanted.market.domain.support.error.CoreErrorMessage;
+import io.wanted.market.domain.support.error.CoreErrorType;
 import lombok.Getter;
 
 @Getter

@@ -1,6 +1,6 @@
 package io.wanted.market.domain.token;
 
-import io.wanted.market.domain.support.BaseEntity;
+import io.wanted.market.domain.support.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;

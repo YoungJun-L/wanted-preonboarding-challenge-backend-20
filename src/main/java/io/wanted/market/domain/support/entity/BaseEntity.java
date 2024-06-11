@@ -1,4 +1,4 @@
-package io.wanted.market.domain.support;
+package io.wanted.market.domain.support.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

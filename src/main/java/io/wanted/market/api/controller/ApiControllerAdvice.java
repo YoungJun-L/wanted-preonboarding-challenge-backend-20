@@ -1,8 +1,8 @@
 package io.wanted.market.api.controller;
 
 import io.wanted.market.api.support.response.ApiResponse;
-import io.wanted.market.domain.error.CoreErrorType;
-import io.wanted.market.domain.error.CoreException;
+import io.wanted.market.domain.support.error.CoreErrorType;
+import io.wanted.market.domain.support.error.CoreException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +29,8 @@ public class ApiControllerAdvice {
             case WARN -> log.warn("ApiException : {}", ex.getMessage(), ex);
             default -> log.info("ApiException : {}", ex.getMessage(), ex);
         }
-
-        HttpStatus status = switch (ex.getCoreErrorType()) {
-            case DEFAULT_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
-            case FORBIDDEN_ERROR -> HttpStatus.FORBIDDEN;
-            case NOT_FOUND_ERROR -> HttpStatus.NOT_FOUND;
-            default -> HttpStatus.BAD_REQUEST;
-        };
-
         return ResponseEntity
-                .status(status)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ex.getCoreErrorType(), ex.getData()));
     }
 
