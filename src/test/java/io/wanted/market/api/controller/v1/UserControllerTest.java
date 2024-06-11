@@ -77,8 +77,8 @@ class UserControllerTest extends RestDocsTest {
             "01234567", // Only digits
             "abcdef 123", // Contain whitespace
     })
-    void registerWithInvalidUsername(String inValidUsername) throws Exception {
-        RegisterRequestDto request = new RegisterRequestDto(inValidUsername, VALID_PASSWORD);
+    void registerWithInvalidUsername(String invalidUsername) throws Exception {
+        RegisterRequestDto request = new RegisterRequestDto(invalidUsername, VALID_PASSWORD);
 
         doNothing().when(userService).register(anyString(), anyString());
 
@@ -102,8 +102,8 @@ class UserControllerTest extends RestDocsTest {
             "!@#$%^&*", // Only special characters
             "abcdef 123 !", // Contain whitespace
     })
-    void registerWithInvalidPassword(String inValidPassword) throws Exception {
-        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, inValidPassword);
+    void registerWithInvalidPassword(String invalidPassword) throws Exception {
+        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, invalidPassword);
 
         doNothing().when(userService).register(anyString(), anyString());
 
