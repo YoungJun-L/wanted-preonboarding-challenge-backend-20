@@ -15,7 +15,7 @@
     - 로그인 성공 시 30분간 유효한 access token 생성
     - 로그인 성공 시 30일간 유효한 refresh token 생성
     - 기존에 존재하는 token 제거
-- [ ] token 재발급
+- [x] token 재발급
     - access token 만료 전 refresh token 으로 재발급
     - refresh token 만료가 7일 전이면 refresh token 도 갱신하여 재발급
     - refresh token 이 만료되면 실패
