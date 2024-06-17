@@ -1,4 +1,4 @@
-package io.wanted.market.auth.domain.token;
+package io.wanted.market.auth.storage.token;
 
 import io.wanted.market.core.storage.support.BaseEntity;
 import jakarta.persistence.Entity;

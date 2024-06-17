@@ -11,6 +11,7 @@ import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.domain.support.time.TimeHolder;
 import io.wanted.market.auth.storage.auth.AuthEntity;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
+import io.wanted.market.auth.storage.token.TokenEntity;
 import io.wanted.market.auth.storage.token.TokenJpaRepository;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.AfterEach;

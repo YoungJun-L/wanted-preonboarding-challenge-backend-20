@@ -4,7 +4,6 @@ import io.wanted.market.ContextTest;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
 import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
-import io.wanted.market.auth.storage.user.UserJpaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,28 +25,23 @@ class AuthServiceTest extends ContextTest {
 
     private final AuthJpaRepository authJpaRepository;
 
-    private final UserJpaRepository userJpaRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     AuthServiceTest(
             AuthService authService,
             AuthRepository authRepository,
             AuthJpaRepository authJpaRepository,
-            UserJpaRepository userJpaRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.authService = authService;
         this.authRepository = authRepository;
         this.authJpaRepository = authJpaRepository;
-        this.userJpaRepository = userJpaRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @AfterEach
     void tearDown() {
         authJpaRepository.deleteAllInBatch();
-        userJpaRepository.deleteAllInBatch();
     }
 
     @DisplayName("회원가입 성공")
