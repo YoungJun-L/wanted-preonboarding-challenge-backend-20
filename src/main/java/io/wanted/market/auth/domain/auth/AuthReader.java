@@ -25,7 +25,7 @@ public class AuthReader {
 
     public Auth readEnabled(Long id) {
         Auth auth = authRepository.read(id)
-                .orElseThrow(() -> new AuthException(AuthErrorType.AUTH_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new AuthException(AuthErrorType.UNAUTHORIZED_ERROR));
         auth.validate();
         return auth;
     }
