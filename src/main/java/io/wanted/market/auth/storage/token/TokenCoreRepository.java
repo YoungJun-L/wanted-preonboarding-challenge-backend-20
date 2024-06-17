@@ -15,7 +15,7 @@ public class TokenCoreRepository implements TokenRepository {
     private final TokenJpaRepository tokenJpaRepository;
 
     @Transactional
-    public Token save(TokenPair tokenPair) {
+    public Token write(TokenPair tokenPair) {
         Long authId = tokenPair.authId();
         if (tokenJpaRepository.existsByAuthId(authId)) {
             tokenJpaRepository.deleteByAuthId(authId);
@@ -26,7 +26,7 @@ public class TokenCoreRepository implements TokenRepository {
     }
 
     @Override
-    public List<Token> find(String refreshToken) {
+    public List<Token> read(String refreshToken) {
         return tokenJpaRepository.findByRefreshToken(refreshToken).stream()
                 .map(Token::from)
                 .toList();

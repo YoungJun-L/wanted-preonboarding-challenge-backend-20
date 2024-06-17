@@ -16,7 +16,7 @@ public class TokenReader {
 
     public Token readVerified(String refreshToken) {
         tokenParser.validate(refreshToken);
-        List<Token> tokens = tokenRepository.find(refreshToken);
+        List<Token> tokens = tokenRepository.read(refreshToken);
         if (tokens.isEmpty()) {
             throw new AuthException(AuthErrorType.TOKEN_NOT_FOUND_ERROR);
         }

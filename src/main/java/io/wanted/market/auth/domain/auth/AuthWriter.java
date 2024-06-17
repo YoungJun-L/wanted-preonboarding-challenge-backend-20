@@ -18,6 +18,6 @@ public class AuthWriter {
             throw new AuthException(AuthErrorType.AUTH_DUPLICATE_ERROR);
         }
         String encodedPassword = passwordEncoder.encode(newAuth.password());
-        return authRepository.save(newAuth.encoded(encodedPassword));
+        return authRepository.write(newAuth.encoded(encodedPassword));
     }
 }

@@ -54,7 +54,7 @@ class AuthServiceTest extends ContextTest {
         authService.register(newAuth);
 
         // then
-        List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);
+        List<Auth> actual = authRepository.read(VALID_USERNAME);
         assertThat(actual).isNotEmpty();
         assertThat(actual.get(0).getUsername()).isEqualTo(VALID_USERNAME);
     }
@@ -64,7 +64,7 @@ class AuthServiceTest extends ContextTest {
     void registerWithDuplicateUsername() {
         // given
         NewAuth newAuth = new NewAuth(VALID_USERNAME, VALID_PASSWORD, AuthStatus.ENABLED);
-        authRepository.save(newAuth);
+        authRepository.write(newAuth);
 
         // when & then
         AuthException ex = assertThrows(AuthException.class, () -> authService.register(newAuth));
@@ -81,7 +81,7 @@ class AuthServiceTest extends ContextTest {
         authService.register(newAuth);
 
         // then
-        List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);
+        List<Auth> actual = authRepository.read(VALID_USERNAME);
         assertThat(actual).isNotEmpty();
         assertThat(passwordEncoder.matches(VALID_PASSWORD, actual.get(0).getPassword())).isTrue();
     }

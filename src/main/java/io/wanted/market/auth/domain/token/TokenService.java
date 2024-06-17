@@ -24,7 +24,7 @@ public class TokenService {
 
     public TokenPair reissue(String refreshToken) {
         Token token = tokenReader.readVerified(refreshToken);
-        Auth auth = authReader.findEnabled(token.authId());
+        Auth auth = authReader.readEnabled(token.authId());
         TokenPair tokenPair = tokenPairGenerator.issue(auth);
         tokenWriter.write(tokenPair);
         return tokenPair;

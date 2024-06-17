@@ -9,6 +9,6 @@ public class TokenWriter {
     private final TokenRepository tokenRepository;
 
     public Token write(TokenPair tokenPair) {
-        return tokenRepository.save(tokenPair);
+        return tokenRepository.write(tokenPair);
     }
 }
