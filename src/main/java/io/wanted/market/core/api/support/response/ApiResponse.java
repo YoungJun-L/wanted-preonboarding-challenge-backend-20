@@ -2,22 +2,12 @@ package io.wanted.market.core.api.support.response;
 
 import io.wanted.market.core.domain.support.error.CoreErrorMessage;
 import io.wanted.market.core.domain.support.error.CoreErrorType;
-import lombok.Getter;
 
-@Getter
-public class ApiResponse<T> {
-    private final ApiStatusType status;
-
-    private final T data;
-
-    private final CoreErrorMessage error;
-
-    private ApiResponse(ApiStatusType status, T data, CoreErrorMessage error) {
-        this.status = status;
-        this.data = data;
-        this.error = error;
-    }
-
+public record ApiResponse<T>(
+        ApiStatusType status,
+        T data,
+        CoreErrorMessage error
+) {
     public static ApiResponse<Void> success() {
         return new ApiResponse<>(ApiStatusType.SUCCESS, null, null);
     }

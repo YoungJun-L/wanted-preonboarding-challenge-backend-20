@@ -2,22 +2,12 @@ package io.wanted.market.auth.api.support.response;
 
 import io.wanted.market.auth.api.support.error.AuthErrorMessage;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
-import lombok.Getter;
 
-@Getter
-public class AuthResponse<T> {
-    private final AuthStatusType status;
-
-    private final T data;
-
-    private final AuthErrorMessage error;
-
-    private AuthResponse(AuthStatusType status, T data, AuthErrorMessage error) {
-        this.status = status;
-        this.data = data;
-        this.error = error;
-    }
-
+public record AuthResponse<T>(
+        AuthStatusType status,
+        T data,
+        AuthErrorMessage error
+) {
     public static AuthResponse<Void> success() {
         return new AuthResponse<>(AuthStatusType.SUCCESS, null, null);
     }
