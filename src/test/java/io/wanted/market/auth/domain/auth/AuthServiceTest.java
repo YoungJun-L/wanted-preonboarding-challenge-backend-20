@@ -1,8 +1,8 @@
 package io.wanted.market.auth.domain.auth;
 
 import io.wanted.market.ContextTest;
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
 import io.wanted.market.auth.storage.user.UserJpaRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -73,7 +73,7 @@ class AuthServiceTest extends ContextTest {
         authRepository.save(auth);
 
         // when & then
-        AuthApiException ex = assertThrows(AuthApiException.class, () -> authService.register(auth));
+        AuthException ex = assertThrows(AuthException.class, () -> authService.register(auth));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_DUPLICATE_ERROR);
     }
 

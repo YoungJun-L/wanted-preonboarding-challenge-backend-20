@@ -4,8 +4,8 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.wanted.market.ContextTest;
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthRepository;
 import io.wanted.market.auth.domain.support.time.TimeHolder;
@@ -178,7 +178,7 @@ class TokenServiceTest extends ContextTest {
                 .compact();
 
         // when & then
-        AuthApiException ex = assertThrows(AuthApiException.class, () -> tokenService.reissue(token));
+        AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(token));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.TOKEN_EXPIRED_ERROR);
     }
 
@@ -186,7 +186,7 @@ class TokenServiceTest extends ContextTest {
     @Test
     void reissueWithNotRegisteredUser() {
         // given & when & then
-        AuthApiException ex = assertThrows(AuthApiException.class, () -> tokenService.reissue(refreshToken));
+        AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(refreshToken));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_NOT_FOUND_ERROR);
     }
 

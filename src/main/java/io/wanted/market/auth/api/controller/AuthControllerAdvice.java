@@ -1,7 +1,7 @@
 package io.wanted.market.auth.api.controller;
 
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.api.support.response.AuthResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,12 +22,12 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @Slf4j
 @RestControllerAdvice
 public class AuthControllerAdvice {
-    @ExceptionHandler(AuthApiException.class)
-    public ResponseEntity<AuthResponse<?>> handleAuthException(AuthApiException ex) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<AuthResponse<?>> handleAuthException(AuthException ex) {
         switch (ex.getAuthErrorType().getLogLevel()) {
-            case ERROR -> log.error("AuthApiException : {}", ex.getMessage(), ex);
-            case WARN -> log.warn("AuthApiException : {}", ex.getMessage(), ex);
-            default -> log.info("AuthApiException : {}", ex.getMessage(), ex);
+            case ERROR -> log.error("AuthException : {}", ex.getMessage(), ex);
+            case WARN -> log.warn("AuthException : {}", ex.getMessage(), ex);
+            default -> log.info("AuthException : {}", ex.getMessage(), ex);
         }
         return ResponseEntity
                 .status(ex.getAuthErrorType().getStatus())

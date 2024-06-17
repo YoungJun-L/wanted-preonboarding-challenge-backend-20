@@ -1,7 +1,7 @@
 package io.wanted.market.auth.domain.auth;
 
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class AuthReader {
 
     public void validateDuplicate(String username) {
         if (authRepository.existsByUsername(username)) {
-            throw new AuthApiException(AuthErrorType.AUTH_DUPLICATE_ERROR);
+            throw new AuthException(AuthErrorType.AUTH_DUPLICATE_ERROR);
         }
     }
 }

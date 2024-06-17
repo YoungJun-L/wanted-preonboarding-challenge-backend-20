@@ -1,7 +1,7 @@
 package io.wanted.market.auth.domain.auth;
 
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.storage.auth.AuthEntity;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class AuthRepository {
 
     public Auth findById(Long id) {
         AuthEntity entity = authJpaRepository.findById(id)
-                .orElseThrow(() -> new AuthApiException(AuthErrorType.AUTH_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new AuthException(AuthErrorType.AUTH_NOT_FOUND_ERROR));
         return Auth.from(entity);
     }
 }

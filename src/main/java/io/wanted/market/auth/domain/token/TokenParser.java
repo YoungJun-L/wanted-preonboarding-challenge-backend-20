@@ -4,8 +4,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +21,9 @@ public class TokenParser {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().getSubject();
         } catch (ExpiredJwtException ex) {
-            throw new AuthApiException(AuthErrorType.TOKEN_EXPIRED_ERROR);
+            throw new AuthException(AuthErrorType.TOKEN_EXPIRED_ERROR);
         } catch (Exception ex) {
-            throw new AuthApiException(AuthErrorType.TOKEN_INVALID_ERROR);
+            throw new AuthException(AuthErrorType.TOKEN_INVALID_ERROR);
         }
     }
 
@@ -31,9 +31,9 @@ public class TokenParser {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().getExpiration().getTime();
         } catch (ExpiredJwtException ex) {
-            throw new AuthApiException(AuthErrorType.TOKEN_EXPIRED_ERROR);
+            throw new AuthException(AuthErrorType.TOKEN_EXPIRED_ERROR);
         } catch (Exception ex) {
-            throw new AuthApiException(AuthErrorType.TOKEN_INVALID_ERROR);
+            throw new AuthException(AuthErrorType.TOKEN_INVALID_ERROR);
         }
     }
 }
