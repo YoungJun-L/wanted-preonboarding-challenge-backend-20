@@ -22,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     public ApiResponse<Void> register(@RequestBody @Valid UserRegisterRequestDto userRegisterRequestDto) {
-        authService.register(userRegisterRequestDto.toUser(), userRegisterRequestDto.toAuth());
+        authService.register(userRegisterRequestDto.toAuth());
         return ApiResponse.success();
     }
 

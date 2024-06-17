@@ -7,7 +7,6 @@ import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthService;
 import io.wanted.market.auth.domain.token.TokenPair;
 import io.wanted.market.auth.domain.token.TokenService;
-import io.wanted.market.auth.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -224,7 +223,7 @@ class AuthControllerTest extends RestDocsTest {
     void register() throws Exception {
         UserRegisterRequestDto request = new UserRegisterRequestDto(VALID_USERNAME, VALID_PASSWORD);
 
-        doNothing().when(authService).register(any(User.class), any(Auth.class));
+        doNothing().when(authService).register(any(Auth.class));
 
         mockMvc.perform(
                         post("/auth/register")
@@ -268,7 +267,7 @@ class AuthControllerTest extends RestDocsTest {
     void registerWithInvalidUsername(String invalidUsername) throws Exception {
         UserRegisterRequestDto request = new UserRegisterRequestDto(invalidUsername, VALID_PASSWORD);
 
-        doNothing().when(authService).register(any(User.class), any(Auth.class));
+        doNothing().when(authService).register(any(Auth.class));
 
         mockMvc.perform(
                         post("/auth/register")
@@ -295,7 +294,7 @@ class AuthControllerTest extends RestDocsTest {
     void registerWithInvalidPassword(String invalidPassword) throws Exception {
         UserRegisterRequestDto request = new UserRegisterRequestDto(VALID_USERNAME, invalidPassword);
 
-        doNothing().when(authService).register(any(User.class), any(Auth.class));
+        doNothing().when(authService).register(any(Auth.class));
 
         mockMvc.perform(
                         post("/auth/register")

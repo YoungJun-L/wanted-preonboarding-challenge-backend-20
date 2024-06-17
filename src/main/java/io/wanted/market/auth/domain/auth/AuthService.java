@@ -1,6 +1,5 @@
 package io.wanted.market.auth.domain.auth;
 
-import io.wanted.market.auth.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +17,8 @@ public class AuthService implements UserDetailsService {
         return authReader.read(username);
     }
 
-    public void register(User user, Auth auth) {
+    public void register(Auth auth) {
         authReader.validateDuplicate(auth.username());
-        authWriter.write(user, auth);
+        authWriter.write(auth);
     }
 }

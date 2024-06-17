@@ -1,6 +1,5 @@
 package io.wanted.market.auth.domain.auth;
 
-import io.wanted.market.auth.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,8 +11,8 @@ public class AuthWriter {
 
     private final PasswordEncoder passwordEncoder;
 
-    public void write(User user, Auth auth) {
+    public void write(Auth auth) {
         String encodedPassword = passwordEncoder.encode(auth.password());
-        authRepository.save(user, Auth.enabled(auth.username(), encodedPassword));
+        authRepository.save(Auth.enabled(auth.username(), encodedPassword));
     }
 }

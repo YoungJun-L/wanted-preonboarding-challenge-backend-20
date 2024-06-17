@@ -10,9 +10,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "users")
 public class UserEntity extends BaseEntity {
-    private Long authId;
-
-    public UserEntity(Long authId) {
-        this.authId = authId;
-    }
 }

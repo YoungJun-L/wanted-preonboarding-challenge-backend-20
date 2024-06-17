@@ -3,7 +3,6 @@ package io.wanted.market.auth.domain.auth;
 import io.wanted.market.ContextTest;
 import io.wanted.market.auth.api.support.error.AuthApiException;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
-import io.wanted.market.auth.domain.user.User;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
 import io.wanted.market.auth.storage.user.UserJpaRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -56,10 +55,9 @@ class AuthServiceTest extends ContextTest {
     void register() {
         // given
         Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
-        User user = new User();
 
         // when
-        authService.register(user, auth);
+        authService.register(auth);
 
         // then
         List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);
@@ -72,11 +70,10 @@ class AuthServiceTest extends ContextTest {
     void registerWithDuplicateUsername() {
         // given
         Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
-        User user = new User();
-        authRepository.save(user, auth);
+        authRepository.save(auth);
 
         // when & then
-        AuthApiException ex = assertThrows(AuthApiException.class, () -> authService.register(user, auth));
+        AuthApiException ex = assertThrows(AuthApiException.class, () -> authService.register(auth));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_DUPLICATE_ERROR);
     }
 
@@ -85,10 +82,9 @@ class AuthServiceTest extends ContextTest {
     void registerShouldEncodePassword() {
         // given
         Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
-        User user = new User();
 
         // when
-        authService.register(user, auth);
+        authService.register(auth);
 
         // then
         List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);
