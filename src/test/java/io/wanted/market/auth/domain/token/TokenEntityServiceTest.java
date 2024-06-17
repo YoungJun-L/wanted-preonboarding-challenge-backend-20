@@ -65,10 +65,11 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void issue() {
         // given
-        Auth auth = Auth.enabled("username", "password");
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(auth);
+        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
@@ -95,10 +96,11 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void issueAccessTokenValidFor30Minutes() {
         // given
-        Auth auth = Auth.enabled("username", "password");
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(auth);
+        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
@@ -110,10 +112,11 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void issueRefreshTokenValidFor30Days() {
         // given
-        Auth auth = Auth.enabled("username", "password");
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(auth);
+        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
@@ -170,8 +173,8 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void reissueWithExpiredRefreshToken() {
         // given
-        Auth auth = Auth.enabled("username", "password");
-        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
         String token = buildToken(savedAuth.getId(), 0L);
 
         // when & then
@@ -194,8 +197,8 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void reissueShouldIssueBothTokensWhenRefreshTokenExpiresIn7Days() {
         // given
-        Auth auth = Auth.enabled("username", "password");
-        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
         String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(6L).toMillis());
 
         // when
@@ -212,8 +215,8 @@ class TokenEntityServiceTest extends ContextTest {
     @Test
     void reissueShouldIssueOnlyAccessTokenWhenExpiresMoreThan7Days() {
         // given
-        Auth auth = Auth.enabled("username", "password");
-        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
         String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
 
         // when

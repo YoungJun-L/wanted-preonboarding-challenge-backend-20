@@ -54,10 +54,10 @@ class AuthServiceTest extends ContextTest {
     @Test
     void register() {
         // given
-        Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
+        NewAuth newAuth = new NewAuth(VALID_USERNAME, VALID_PASSWORD, AuthStatus.ENABLED);
 
         // when
-        authService.register(auth);
+        authService.register(newAuth);
 
         // then
         List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);
@@ -69,11 +69,11 @@ class AuthServiceTest extends ContextTest {
     @Test
     void registerWithDuplicateUsername() {
         // given
-        Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
-        authRepository.save(auth);
+        NewAuth newAuth = new NewAuth(VALID_USERNAME, VALID_PASSWORD, AuthStatus.ENABLED);
+        authRepository.save(newAuth);
 
         // when & then
-        AuthException ex = assertThrows(AuthException.class, () -> authService.register(auth));
+        AuthException ex = assertThrows(AuthException.class, () -> authService.register(newAuth));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_DUPLICATE_ERROR);
     }
 
@@ -81,10 +81,10 @@ class AuthServiceTest extends ContextTest {
     @Test
     void registerShouldEncodePassword() {
         // given
-        Auth auth = Auth.enabled(VALID_USERNAME, VALID_PASSWORD);
+        NewAuth newAuth = new NewAuth(VALID_USERNAME, VALID_PASSWORD, AuthStatus.ENABLED);
 
         // when
-        authService.register(auth);
+        authService.register(newAuth);
 
         // then
         List<Auth> actual = authRepository.findByUsername(VALID_USERNAME);

@@ -14,13 +14,13 @@ import java.util.List;
 public class AuthRepository {
     private final AuthJpaRepository authJpaRepository;
 
-    public Auth save(Auth auth) {
-        return Auth.from(authJpaRepository.save(auth.toEntity()));
+    public Auth save(NewAuth newAuth) {
+        return Auth.from(authJpaRepository.save(newAuth.toEntity()));
     }
 
     public List<Auth> findByUsername(String username) {
         return authJpaRepository.findByUsername(username).stream()
-                .map(entity -> Auth.enabled(entity.getUsername(), entity.getPassword()))
+                .map(Auth::from)
                 .toList();
     }
 

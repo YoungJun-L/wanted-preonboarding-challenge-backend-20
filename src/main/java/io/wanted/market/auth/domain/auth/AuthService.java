@@ -17,7 +17,7 @@ public class AuthService implements UserDetailsService {
         return authReader.readEnabled(username);
     }
 
-    public Auth register(Auth auth) {
-        return authWriter.write(auth);
+    public Auth register(NewAuth newAuth) {
+        return authWriter.write(newAuth);
     }
 }

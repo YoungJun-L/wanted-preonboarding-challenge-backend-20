@@ -1,10 +1,12 @@
 package io.wanted.market.auth.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
+import io.wanted.market.auth.api.controller.v1.request.RegisterRequestDto;
 import io.wanted.market.auth.api.controller.v1.request.ReissueRequestDto;
-import io.wanted.market.auth.api.controller.v1.request.UserRegisterRequestDto;
 import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthService;
+import io.wanted.market.auth.domain.auth.AuthStatus;
+import io.wanted.market.auth.domain.auth.NewAuth;
 import io.wanted.market.auth.domain.token.TokenPair;
 import io.wanted.market.auth.domain.token.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,6 @@ import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -220,9 +221,9 @@ class AuthControllerTest extends RestDocsTest {
     @DisplayName("회원가입 성공")
     @Test
     void register() throws Exception {
-        UserRegisterRequestDto request = new UserRegisterRequestDto(VALID_USERNAME, VALID_PASSWORD);
+        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, VALID_PASSWORD);
 
-        doNothing().when(authService).register(any(Auth.class));
+        given(authService.register(any(NewAuth.class))).willReturn(new Auth(1L, "username", "password", AuthStatus.ENABLED));
 
         mockMvc.perform(
                         post("/auth/register")
@@ -244,8 +245,10 @@ class AuthControllerTest extends RestDocsTest {
                                 responseFields(
                                         fieldWithPath("status").type(JsonFieldType.STRING)
                                                 .description("status"),
-                                        fieldWithPath("data").type(JsonFieldType.NULL)
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT)
                                                 .description("data"),
+                                        fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                                .description("id"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
                                 )
@@ -264,9 +267,9 @@ class AuthControllerTest extends RestDocsTest {
             "abcdef 123", // Contain whitespace
     })
     void registerWithInvalidUsername(String invalidUsername) throws Exception {
-        UserRegisterRequestDto request = new UserRegisterRequestDto(invalidUsername, VALID_PASSWORD);
+        RegisterRequestDto request = new RegisterRequestDto(invalidUsername, VALID_PASSWORD);
 
-        doNothing().when(authService).register(any(Auth.class));
+        given(authService.register(any(NewAuth.class))).willReturn(null);
 
         mockMvc.perform(
                         post("/auth/register")
@@ -291,9 +294,9 @@ class AuthControllerTest extends RestDocsTest {
             "abcdef 123 !", // Contain whitespace
     })
     void registerWithInvalidPassword(String invalidPassword) throws Exception {
-        UserRegisterRequestDto request = new UserRegisterRequestDto(VALID_USERNAME, invalidPassword);
+        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, invalidPassword);
 
-        doNothing().when(authService).register(any(Auth.class));
+        given(authService.register(any(NewAuth.class))).willReturn(null);
 
         mockMvc.perform(
                         post("/auth/register")

@@ -13,11 +13,11 @@ public class AuthWriter {
 
     private final PasswordEncoder passwordEncoder;
 
-    public Auth write(Auth auth) {
-        if (authRepository.existsByUsername(auth.username())) {
+    public Auth write(NewAuth newAuth) {
+        if (authRepository.existsByUsername(newAuth.username())) {
             throw new AuthException(AuthErrorType.AUTH_DUPLICATE_ERROR);
         }
-        String encodedPassword = passwordEncoder.encode(auth.password());
-        return authRepository.save(Auth.enabled(auth.username(), encodedPassword));
+        String encodedPassword = passwordEncoder.encode(newAuth.password());
+        return authRepository.save(newAuth.encoded(encodedPassword));
     }
 }

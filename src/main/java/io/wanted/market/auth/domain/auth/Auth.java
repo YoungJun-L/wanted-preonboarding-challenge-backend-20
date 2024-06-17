@@ -10,16 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public record Auth(Long id, String username, String password, AuthStatus status) implements UserDetails {
-    public static Auth enabled(String username, String password) {
-        return new Auth(null, username, password, AuthStatus.ENABLED);
-    }
-
     public static Auth from(AuthEntity entity) {
         return new Auth(entity.getId(), entity.getUsername(), entity.getPassword(), entity.getStatus());
-    }
-
-    public AuthEntity toEntity() {
-        return new AuthEntity(username, password, status);
     }
 
     @Override
