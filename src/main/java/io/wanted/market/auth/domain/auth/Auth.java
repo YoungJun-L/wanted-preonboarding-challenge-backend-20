@@ -1,5 +1,7 @@
 package io.wanted.market.auth.domain.auth;
 
+import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.storage.auth.AuthEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -43,5 +45,11 @@ public record Auth(Long id, String username, String password, AuthStatus status)
     @Override
     public boolean isEnabled() {
         return status.equals(AuthStatus.ENABLED);
+    }
+
+    public void validate() {
+        if (!isAccountNonLocked()) {
+            throw new AuthException(AuthErrorType.AUTH_LOCKED_ERROR);
+        }
     }
 }

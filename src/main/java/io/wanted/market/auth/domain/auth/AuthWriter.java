@@ -1,5 +1,7 @@
 package io.wanted.market.auth.domain.auth;
 
+import io.wanted.market.auth.api.support.error.AuthErrorType;
+import io.wanted.market.auth.api.support.error.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,8 +13,11 @@ public class AuthWriter {
 
     private final PasswordEncoder passwordEncoder;
 
-    public void write(Auth auth) {
+    public Auth write(Auth auth) {
+        if (authRepository.existsByUsername(auth.username())) {
+            throw new AuthException(AuthErrorType.AUTH_DUPLICATE_ERROR);
+        }
         String encodedPassword = passwordEncoder.encode(auth.password());
-        authRepository.save(Auth.enabled(auth.username(), encodedPassword));
+        return authRepository.save(Auth.enabled(auth.username(), encodedPassword));
     }
 }

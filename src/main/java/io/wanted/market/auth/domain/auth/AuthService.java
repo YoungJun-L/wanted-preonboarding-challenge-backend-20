@@ -14,11 +14,10 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return authReader.read(username);
+        return authReader.readEnabled(username);
     }
 
-    public void register(Auth auth) {
-        authReader.validateDuplicate(auth.username());
-        authWriter.write(auth);
+    public Auth register(Auth auth) {
+        return authWriter.write(auth);
     }
 }
