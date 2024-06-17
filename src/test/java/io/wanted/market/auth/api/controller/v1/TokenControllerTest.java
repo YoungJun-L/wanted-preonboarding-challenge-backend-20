@@ -2,6 +2,8 @@ package io.wanted.market.auth.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
 import io.wanted.market.auth.api.controller.v1.request.ReissueRequestDto;
+import io.wanted.market.auth.domain.auth.Auth;
+import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.domain.token.TokenPair;
 import io.wanted.market.auth.domain.token.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -102,6 +104,7 @@ class TokenControllerTest extends RestDocsTest {
 
     private TokenPair buildTokenPair() {
         return new TokenPair(
+                new Auth(-1L, "username", "password", AuthStatus.ENABLED),
                 ACCESS_TOKEN,
                 ACCESS_TOKEN_EXPIRES_IN,
                 REFRESH_TOKEN,

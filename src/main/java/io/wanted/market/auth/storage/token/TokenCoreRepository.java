@@ -15,14 +15,10 @@ public class TokenCoreRepository implements TokenRepository {
 
     @Transactional
     public Token save(Auth auth, TokenPair tokenPair) {
-        if (tokenPair.refreshToken() == null) {
-            return null;
-        }
-
         if (tokenJpaRepository.existsByAuthId(auth.id())) {
             tokenJpaRepository.deleteByAuthId(auth.id());
         }
-        TokenEntity tokenEntity = tokenPair.toEntity();
+        TokenEntity tokenEntity = new TokenEntity(auth.id(), tokenPair.refreshToken());
         tokenJpaRepository.save(tokenEntity);
         return Token.from(auth, tokenEntity);
     }

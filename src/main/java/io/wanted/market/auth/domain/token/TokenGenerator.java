@@ -45,6 +45,7 @@ public class TokenGenerator {
         String accessToken = generateAccessToken(subject, now);
         String refreshToken = generateRefreshToken(subject, now);
         return new TokenPair(
+                auth,
                 accessToken,
                 now + accessExp,
                 refreshToken,
@@ -60,6 +61,7 @@ public class TokenGenerator {
         if (now >= expiration - ONE_WEEK_IN_MS) {
             String newRefreshToken = generateRefreshToken(subject, now);
             return new TokenPair(
+                    auth,
                     accessToken,
                     now + accessExp,
                     newRefreshToken,
@@ -67,6 +69,7 @@ public class TokenGenerator {
             );
         }
         return new TokenPair(
+                auth,
                 accessToken,
                 now + accessExp,
                 null,

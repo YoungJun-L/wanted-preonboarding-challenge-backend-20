@@ -10,6 +10,9 @@ public class TokenWriter {
     private final TokenRepository tokenRepository;
 
     public Token write(Auth auth, TokenPair tokenPair) {
+        if (tokenPair.refreshToken() == null) {
+            return null;
+        }
         return tokenRepository.save(auth, tokenPair);
     }
 }
