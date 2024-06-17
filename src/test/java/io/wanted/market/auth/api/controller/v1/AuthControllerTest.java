@@ -2,17 +2,13 @@ package io.wanted.market.auth.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
 import io.wanted.market.auth.api.controller.v1.request.RegisterRequestDto;
-import io.wanted.market.auth.api.controller.v1.request.ReissueRequestDto;
 import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthService;
 import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.domain.auth.NewAuth;
-import io.wanted.market.auth.domain.token.TokenPair;
-import io.wanted.market.auth.domain.token.TokenService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -20,7 +16,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import static io.wanted.market.RestDocsUtils.requestPreprocessor;
 import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -32,28 +27,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerTest extends RestDocsTest {
     private static final String USER_ID = "userId";
 
-    private static final String ACCESS_TOKEN = "accessToken";
-
-    private static final Long ACCESS_TOKEN_EXPIRES_IN = 1L;
-
-    private static final String REFRESH_TOKEN = "refreshToken";
-
-    private static final Long REFRESH_TOKEN_EXPIRES_IN = 1L;
-
     private static final String VALID_USERNAME = "username123";
 
     private static final String VALID_PASSWORD = "password123!";
 
     private final AuthService authService = mock(AuthService.class);
 
-    private final TokenService tokenService = mock(TokenService.class);
-
     @Override
     protected Object initController() {
-        return new AuthController(authService, tokenService);
+        return new AuthController(authService);
     }
 
-//    @DisplayName("로그인 성공")
+    //    @DisplayName("로그인 성공")
 //    @Test
 //    void login() throws Exception {
 //        LoginRequestDto request = new LoginRequestDto(VALID_USERNAME, VALID_PASSWORD);
@@ -147,77 +132,6 @@ class AuthControllerTest extends RestDocsTest {
 //                .andDo(print())
 //                .andExpect(status().isBadRequest());
 //    }
-
-    @DisplayName("재발급 성공")
-    @Test
-    void reissue() throws Exception {
-        ReissueRequestDto request = new ReissueRequestDto("refreshToken");
-
-        given(tokenService.reissue(anyString())).willReturn(buildTokenPair());
-
-        mockMvc.perform(
-                        post("/auth/reissue")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("reissue",
-                                requestPreprocessor(),
-                                responsePreprocessor(),
-                                requestFields(
-                                        fieldWithPath("refreshToken").type(JsonFieldType.STRING)
-                                                .description("refreshToken")),
-                                responseFields(
-                                        fieldWithPath("status").type(JsonFieldType.STRING)
-                                                .description("status"),
-                                        fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                                .description("data"),
-                                        fieldWithPath("data.accessToken").type(JsonFieldType.STRING)
-                                                .description("accessToken"),
-                                        fieldWithPath("data.accessTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("accessToken 만료 시간"),
-                                        fieldWithPath("data.refreshToken").type(JsonFieldType.STRING)
-                                                .description("refreshToken"),
-                                        fieldWithPath("data.refreshTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("refreshToken 만료 시간"),
-                                        fieldWithPath("error").type(JsonFieldType.NULL)
-                                                .description("error")
-                                )
-                        )
-                );
-    }
-
-    @DisplayName("유효하지 않은 refresh token 으로 재발급 시 실패한다.")
-    @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = {
-            "", // Empty String
-            " ", // Only whitespace
-    })
-    void reissueWithInvalidRefreshToken(String invalidRefreshToken) throws Exception {
-        ReissueRequestDto request = new ReissueRequestDto(invalidRefreshToken);
-
-        given(tokenService.reissue(anyString())).willReturn(null);
-
-        mockMvc.perform(
-                        post("/auth/reissue")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    private TokenPair buildTokenPair() {
-        return new TokenPair(
-                ACCESS_TOKEN,
-                ACCESS_TOKEN_EXPIRES_IN,
-                REFRESH_TOKEN,
-                REFRESH_TOKEN_EXPIRES_IN
-        );
-    }
-
     @DisplayName("회원가입 성공")
     @Test
     void register() throws Exception {
