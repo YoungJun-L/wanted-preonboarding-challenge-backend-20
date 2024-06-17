@@ -29,14 +29,14 @@ public class TokenGenerator {
             @Value("${spring.security.jwt.exp.access}") Long accessExp,
             @Value("${spring.security.jwt.exp.refresh}") Long refreshExp,
             TimeHolder timeHolder,
-            TokenParser tokenParser) {
+            TokenParser tokenParser
+    ) {
         this.secretKey = secretKey;
         this.accessExp = accessExp;
         this.refreshExp = refreshExp;
         this.timeHolder = timeHolder;
         this.tokenParser = tokenParser;
     }
-
 
     public TokenPair issue(String subject) {
         Long now = timeHolder.now();
