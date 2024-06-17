@@ -16,6 +16,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -26,6 +27,8 @@ public class SecurityConfig {
             "/auth/token",
             "/health"
     };
+
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
@@ -38,6 +41,7 @@ public class SecurityConfig {
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/auth/login")
+                        .successHandler(authenticationSuccessHandler)
                         .failureHandler(authenticationFailureHandler())
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
