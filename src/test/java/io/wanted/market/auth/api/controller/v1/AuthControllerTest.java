@@ -210,7 +210,6 @@ class AuthControllerTest extends RestDocsTest {
 
     private TokenPair buildTokenPair() {
         return new TokenPair(
-                USER_ID,
                 ACCESS_TOKEN,
                 ACCESS_TOKEN_EXPIRES_IN,
                 REFRESH_TOKEN,

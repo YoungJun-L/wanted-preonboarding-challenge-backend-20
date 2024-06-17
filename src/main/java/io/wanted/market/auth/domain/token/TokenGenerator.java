@@ -2,6 +2,7 @@ package io.wanted.market.auth.domain.token;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.support.time.TimeHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -38,12 +39,12 @@ public class TokenGenerator {
         this.tokenParser = tokenParser;
     }
 
-    public TokenPair issue(String subject) {
+    public TokenPair issue(Auth auth) {
         Long now = timeHolder.now();
+        String subject = auth.getUsername();
         String accessToken = generateAccessToken(subject, now);
         String refreshToken = generateRefreshToken(subject, now);
         return new TokenPair(
-                subject,
                 accessToken,
                 now + accessExp,
                 refreshToken,
@@ -51,14 +52,14 @@ public class TokenGenerator {
         );
     }
 
-    public TokenPair reissue(String subject, String refreshToken) {
+    public TokenPair reissue(Auth auth, String refreshToken) {
         Long now = timeHolder.now();
+        String subject = auth.getUsername();
         String accessToken = generateAccessToken(subject, now);
         Long expiration = tokenParser.parseExpiration(refreshToken);
         if (now >= expiration - ONE_WEEK_IN_MS) {
             String newRefreshToken = generateRefreshToken(subject, now);
             return new TokenPair(
-                    subject,
                     accessToken,
                     now + accessExp,
                     newRefreshToken,
@@ -66,7 +67,6 @@ public class TokenGenerator {
             );
         }
         return new TokenPair(
-                subject,
                 accessToken,
                 now + accessExp,
                 null,

@@ -1,6 +1,7 @@
 package io.wanted.market.auth.domain.token;
 
-import io.wanted.market.auth.storage.token.TokenRepository;
+import io.wanted.market.auth.domain.auth.Auth;
+import io.wanted.market.auth.storage.token.TokenJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,19 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Component
 public class TokenWriter {
-    private final TokenRepository tokenRepository;
+    private final TokenJpaRepository tokenJpaRepository;
 
     @Transactional
-    public Long write(TokenPair tokenPair) {
+    public Long write(Auth auth, TokenPair tokenPair) {
         if (tokenPair.refreshToken() == null) {
             return null;
         }
 
-        if (tokenRepository.existsByUserId(tokenPair.userId())) {
-            tokenRepository.deleteByUserId(tokenPair.userId());
+        if (tokenJpaRepository.existsByAuthId(auth.id())) {
+            tokenJpaRepository.deleteByAuthId(auth.id());
         }
-        Token token = tokenPair.toEntity();
-        tokenRepository.save(token);
-        return token.getId();
+        TokenEntity tokenEntity = tokenPair.toEntity(auth.id());
+        tokenJpaRepository.save(tokenEntity);
+        return tokenEntity.getId();
     }
 }

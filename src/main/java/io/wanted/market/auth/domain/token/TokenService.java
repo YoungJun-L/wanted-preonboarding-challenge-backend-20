@@ -19,9 +19,9 @@ public class TokenService {
 
     private final AuthValidator authValidator;
 
-    public TokenPair issue(String userId) {
-        TokenPair tokenPair = tokenGenerator.issue(userId);
-        tokenWriter.write(tokenPair);
+    public TokenPair issue(Auth auth) {
+        TokenPair tokenPair = tokenGenerator.issue(auth);
+        tokenWriter.write(auth, tokenPair);
         return tokenPair;
     }
 
@@ -29,8 +29,8 @@ public class TokenService {
         String authId = tokenParser.parseSubject(refreshToken);
         Auth auth = authReader.read(Long.valueOf(authId));
         authValidator.validate(auth);
-        TokenPair tokenPair = tokenGenerator.reissue(authId, refreshToken);
-        tokenWriter.write(tokenPair);
+        TokenPair tokenPair = tokenGenerator.reissue(auth, refreshToken);
+        tokenWriter.write(auth, tokenPair);
         return tokenPair;
     }
 }

@@ -161,5 +161,5 @@
 
 - 인증, 인가 로직을 주요 비즈니스 로직과 분리
     - 도메인 패키지 내 spring security 의존성 제거
-- access token 도 저장하여 상태 관리
+- access tokenEntity 도 저장하여 상태 관리
 - 서비스 이용 불가능한 유저 테스트

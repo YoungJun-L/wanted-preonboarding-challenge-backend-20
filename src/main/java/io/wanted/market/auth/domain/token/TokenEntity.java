@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Token extends BaseEntity {
-    private String userId;
+public class TokenEntity extends BaseEntity {
+    private Long authId;
 
     private String refreshToken;
 
-    public Token(String userId, String refreshToken) {
-        this.userId = userId;
+    public TokenEntity(Long authId, String refreshToken) {
+        this.authId = authId;
         this.refreshToken = refreshToken;
     }
 }

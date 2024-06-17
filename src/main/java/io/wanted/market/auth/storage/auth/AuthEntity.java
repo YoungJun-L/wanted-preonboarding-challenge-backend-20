@@ -20,9 +20,9 @@ public class AuthEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthStatus status;
 
-    public AuthEntity(String username, String password) {
+    public AuthEntity(String username, String password, AuthStatus status) {
         this.username = username;
         this.password = password;
-        this.status = AuthStatus.ENABLED;
+        this.status = status;
     }
 }

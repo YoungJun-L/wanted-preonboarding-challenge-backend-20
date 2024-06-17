@@ -7,11 +7,11 @@ import io.wanted.market.ContextTest;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
 import io.wanted.market.auth.api.support.error.AuthException;
 import io.wanted.market.auth.domain.auth.Auth;
-import io.wanted.market.auth.domain.auth.AuthRepository;
+import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.domain.support.time.TimeHolder;
 import io.wanted.market.auth.storage.auth.AuthEntity;
 import io.wanted.market.auth.storage.auth.AuthJpaRepository;
-import io.wanted.market.auth.storage.token.TokenRepository;
+import io.wanted.market.auth.storage.token.TokenJpaRepository;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,14 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TokenServiceTest extends ContextTest {
-    private static final String AUTH_ID = "1234";
-
+class TokenEntityServiceTest extends ContextTest {
     private final TokenService tokenService;
 
-    private final TokenRepository tokenRepository;
-
-    private final AuthRepository authRepository;
+    private final TokenJpaRepository tokenJpaRepository;
 
     private final AuthJpaRepository authJpaRepository;
 
@@ -44,47 +40,37 @@ class TokenServiceTest extends ContextTest {
 
     private final JwtParser jwtParser;
 
-    private final String refreshToken;
-
-    TokenServiceTest(
+    TokenEntityServiceTest(
             TokenService tokenService,
-            TokenRepository tokenRepository,
-            AuthRepository authRepository,
+            TokenJpaRepository tokenJpaRepository,
             AuthJpaRepository authJpaRepository,
             TimeHolder timeHolder,
             @Value("${spring.security.jwt.secret-key}") String secretKey
     ) {
         this.tokenService = tokenService;
-        this.tokenRepository = tokenRepository;
-        this.authRepository = authRepository;
+        this.tokenJpaRepository = tokenJpaRepository;
         this.authJpaRepository = authJpaRepository;
         this.timeHolder = timeHolder;
         this.secretKey = secretKey;
         this.jwtParser = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes())).build();
-        this.refreshToken = Jwts
-                .builder()
-                .claims(Collections.emptyMap())
-                .subject(AUTH_ID)
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now() + Duration.ofDays(30L).toMillis()))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
     }
 
     @AfterEach
     void tearDown() {
-        tokenRepository.deleteAllInBatch();
+        tokenJpaRepository.deleteAllInBatch();
         authJpaRepository.deleteAllInBatch();
     }
 
     @DisplayName("토큰 발급 성공")
     @Test
     void issue() {
-        // given & when
-        TokenPair tokenPair = tokenService.issue(AUTH_ID);
+        // given
+        Auth auth = Auth.enabled("username", "password");
+
+        // when
+        TokenPair tokenPair = tokenService.issue(auth);
 
         // then
-        assertThat(tokenPair.userId()).isEqualTo(AUTH_ID);
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
     }
@@ -92,20 +78,27 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 시 refresh token 이 저장된다.")
     @Test
     void issueShouldSaveRefreshToken() {
-        // given & when
-        TokenPair tokenPair = tokenService.issue(AUTH_ID);
+        // given
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
+
+        // when
+        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
 
         // then
-        List<Token> tokens = tokenRepository.findByUserId(AUTH_ID);
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
+        List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
+        assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities.get(0).getRefreshToken()).isEqualTo(tokenPair.refreshToken());
     }
 
     @DisplayName("토큰 발급 시 access token 은 30분간 유효하다.")
     @Test
     void issueAccessTokenValidFor30Minutes() {
-        // given & when
-        TokenPair tokenPair = tokenService.issue(AUTH_ID);
+        // given
+        Auth auth = Auth.enabled("username", "password");
+
+        // when
+        TokenPair tokenPair = tokenService.issue(auth);
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
@@ -116,8 +109,11 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 발급 시 refresh token 은 30일간 유효하다.")
     @Test
     void issueRefreshTokenValidFor30Days() {
-        // given & when
-        TokenPair tokenPair = tokenService.issue(AUTH_ID);
+        // given
+        Auth auth = Auth.enabled("username", "password");
+
+        // when
+        TokenPair tokenPair = tokenService.issue(auth);
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
@@ -129,38 +125,45 @@ class TokenServiceTest extends ContextTest {
     @Test
     void issueShouldRemoveOldToken() {
         // given
-        Token token = new Token(AUTH_ID, refreshToken);
-        tokenRepository.save(token);
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
+
+        TokenEntity tokenEntity = new TokenEntity(savedAuth.getId(), "oldRefreshToken");
+        TokenEntity savedTokenEntity = tokenJpaRepository.save(tokenEntity);
 
         // when
-        tokenService.issue(AUTH_ID);
+        tokenService.issue(Auth.from(savedAuth));
 
         // then
-        List<Token> tokens = tokenRepository.findByUserId(AUTH_ID);
-        assertThat(tokens).hasSize(1);
-        assertThat(tokens.get(0).getId()).isNotEqualTo(token.getId());
+        List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
+        assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities.get(0).getId()).isNotEqualTo(savedTokenEntity.getId());
     }
 
     @DisplayName("토큰 재발급 성공")
     @Test
     void reissue() {
         // given
-        Auth auth = Auth.enabled("username", "password");
-        AuthEntity saved = authJpaRepository.save(auth.toEntity());
-        String token = Jwts.builder()
-                .claims(Collections.emptyMap())
-                .subject(String.valueOf(saved.getId()))
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now() + Duration.ofDays(30L).toMillis()))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
+        String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
 
         // when
-        TokenPair tokenPair = tokenService.reissue(token);
+        TokenPair tokenPair = tokenService.reissue(refreshToken);
 
         // then
-        assertThat(tokenPair.userId()).isEqualTo(String.valueOf(saved.getId()));
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
+        assertThat(tokenPair.refreshToken()).isNull();
+    }
+
+    private String buildToken(Long id, Long expiration) {
+        return Jwts.builder()
+                .claims(Collections.emptyMap())
+                .subject(String.valueOf(id))
+                .issuedAt(new Date(timeHolder.now()))
+                .expiration(new Date(timeHolder.now() + expiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .compact();
     }
 
     @DisplayName("토큰 재발급 시 refresh token 이 만료되면 실패한다.")
@@ -168,14 +171,8 @@ class TokenServiceTest extends ContextTest {
     void reissueWithExpiredRefreshToken() {
         // given
         Auth auth = Auth.enabled("username", "password");
-        AuthEntity saved = authJpaRepository.save(auth.toEntity());
-        String token = Jwts.builder()
-                .claims(Collections.emptyMap())
-                .subject(String.valueOf(saved.getId()))
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now()))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        String token = buildToken(savedAuth.getId(), 0L);
 
         // when & then
         AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(token));
@@ -185,7 +182,10 @@ class TokenServiceTest extends ContextTest {
     @DisplayName("토큰 재발급 시 가입하지 않은 회원이면 실패한다.")
     @Test
     void reissueWithNotRegisteredUser() {
-        // given & when & then
+        // given
+        String refreshToken = buildToken(-1L, Duration.ofDays(30L).toMillis());
+
+        // when & then
         AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(refreshToken));
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_NOT_FOUND_ERROR);
     }
@@ -195,17 +195,11 @@ class TokenServiceTest extends ContextTest {
     void reissueShouldIssueBothTokensWhenRefreshTokenExpiresIn7Days() {
         // given
         Auth auth = Auth.enabled("username", "password");
-        AuthEntity saved = authJpaRepository.save(auth.toEntity());
-        String token = Jwts.builder()
-                .claims(Collections.emptyMap())
-                .subject(String.valueOf(saved.getId()))
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now() + Duration.ofDays(7L).toMillis()))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(6L).toMillis());
 
         // when
-        TokenPair tokenPair = tokenService.reissue(token);
+        TokenPair tokenPair = tokenService.reissue(refreshToken);
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
@@ -219,17 +213,11 @@ class TokenServiceTest extends ContextTest {
     void reissueShouldIssueOnlyAccessTokenWhenExpiresMoreThan7Days() {
         // given
         Auth auth = Auth.enabled("username", "password");
-        AuthEntity saved = authJpaRepository.save(auth.toEntity());
-        String token = Jwts.builder()
-                .claims(Collections.emptyMap())
-                .subject(String.valueOf(saved.getId()))
-                .issuedAt(new Date(timeHolder.now()))
-                .expiration(new Date(timeHolder.now() + Duration.ofDays(8L).toMillis()))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        AuthEntity savedAuth = authJpaRepository.save(auth.toEntity());
+        String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
 
         // when
-        TokenPair tokenPair = tokenService.reissue(token);
+        TokenPair tokenPair = tokenService.reissue(refreshToken);
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));

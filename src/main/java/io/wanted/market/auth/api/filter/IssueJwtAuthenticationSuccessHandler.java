@@ -28,7 +28,7 @@ public class IssueJwtAuthenticationSuccessHandler implements AuthenticationSucce
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         Auth auth = (Auth) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        TokenPair tokenPair = tokenService.issue(auth.getUsername());
+        TokenPair tokenPair = tokenService.issue(auth);
         ApiResponse<?> apiResponse = ApiResponse.success(LoginResponseDto.from(tokenPair));
         write(response, apiResponse);
     }
