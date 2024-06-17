@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TokenEntityServiceTest extends ContextTest {
+class TokenServiceTest extends ContextTest {
     private final TokenService tokenService;
 
     private final TokenJpaRepository tokenJpaRepository;
@@ -41,7 +41,7 @@ class TokenEntityServiceTest extends ContextTest {
 
     private final JwtParser jwtParser;
 
-    TokenEntityServiceTest(
+    TokenServiceTest(
             TokenService tokenService,
             TokenJpaRepository tokenJpaRepository,
             AuthJpaRepository authJpaRepository,
