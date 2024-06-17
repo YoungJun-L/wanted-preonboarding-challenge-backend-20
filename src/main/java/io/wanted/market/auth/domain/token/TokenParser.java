@@ -27,9 +27,9 @@ public class TokenParser {
         }
     }
 
-    public Long parseExpiration(String token) {
+    public void validate(String token) {
         try {
-            return jwtParser.parseSignedClaims(token).getPayload().getExpiration().getTime();
+            jwtParser.parseSignedClaims(token);
         } catch (ExpiredJwtException ex) {
             throw new AuthException(AuthErrorType.TOKEN_EXPIRED_ERROR);
         } catch (Exception ex) {

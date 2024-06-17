@@ -150,14 +150,17 @@ class TokenServiceTest extends ContextTest {
         // given
         AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
+
         String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
+        TokenEntity tokenEntity = new TokenEntity(savedAuth.getId(), refreshToken);
+        tokenJpaRepository.save(tokenEntity);
 
         // when
         TokenPair tokenPair = tokenService.reissue(refreshToken);
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
-        assertThat(tokenPair.refreshToken()).isNull();
+        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
     }
 
     private String buildToken(Long id, Long expiration) {
@@ -191,42 +194,26 @@ class TokenServiceTest extends ContextTest {
 
         // when & then
         AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(refreshToken));
-        assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_NOT_FOUND_ERROR);
+        assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.TOKEN_NOT_FOUND_ERROR);
     }
 
-    @DisplayName("토큰 재발급 시 refresh token 이 7일 내 만료이면 갱신하여 발급한다.")
+    @DisplayName("토큰 재발급 시 이전 토큰은 제거된다.")
     @Test
-    void reissueShouldIssueBothTokensWhenRefreshTokenExpiresIn7Days() {
+    void reissueShouldRemoveOldToken() {
         // given
         AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
-        String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(6L).toMillis());
 
-        // when
-        TokenPair tokenPair = tokenService.reissue(refreshToken);
-
-        // then
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
-        assertThat(tokenPair.accessTokenExpiresIn()).isPositive();
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.refreshToken()));
-        assertThat(tokenPair.refreshTokenExpiresIn()).isPositive();
-    }
-
-    @DisplayName("토큰 재발급 시 refresh token 만료가 7일 이상 남았으면 access token 만 발급한다.")
-    @Test
-    void reissueShouldIssueOnlyAccessTokenWhenExpiresMoreThan7Days() {
-        // given
-        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.ENABLED);
-        AuthEntity savedAuth = authJpaRepository.save(authEntity);
         String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
+        TokenEntity tokenEntity = new TokenEntity(savedAuth.getId(), refreshToken);
+        TokenEntity savedTokenEntity = tokenJpaRepository.save(tokenEntity);
 
         // when
-        TokenPair tokenPair = tokenService.reissue(refreshToken);
+        tokenService.reissue(refreshToken);
 
         // then
-        assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
-        assertThat(tokenPair.accessTokenExpiresIn()).isPositive();
-        assertThat(tokenPair.refreshToken()).isNull();
-        assertThat(tokenPair.refreshTokenExpiresIn()).isNull();
+        List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
+        assertThat(tokenEntities).hasSize(1);
+        assertThat(tokenEntities.get(0).getId()).isNotEqualTo(savedTokenEntity.getId());
     }
 }

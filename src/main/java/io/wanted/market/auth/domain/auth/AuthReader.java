@@ -21,7 +21,7 @@ public class AuthReader {
         return auth;
     }
 
-    public Auth readEnabled(Long id) {
+    public Auth findEnabled(Long id) {
         Auth auth = authRepository.findById(id);
         auth.validate();
         return auth;

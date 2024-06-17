@@ -10,4 +10,6 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Long> {
     List<TokenEntity> findByAuthId(Long authId);
 
     void deleteByAuthId(Long authId);
+
+    List<TokenEntity> findByRefreshToken(String refreshToken);
 }

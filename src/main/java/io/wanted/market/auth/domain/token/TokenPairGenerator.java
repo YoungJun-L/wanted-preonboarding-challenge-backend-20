@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class TokenGenerator {
-    private static final Long ONE_WEEK_IN_MS = 604_800_000L;
-
+public class TokenPairGenerator {
     private final String secretKey;
 
     private final Long accessExp;
@@ -23,20 +21,16 @@ public class TokenGenerator {
 
     private final TimeHolder timeHolder;
 
-    private final TokenParser tokenParser;
-
-    public TokenGenerator(
+    public TokenPairGenerator(
             @Value("${spring.security.jwt.secret-key}") String secretKey,
             @Value("${spring.security.jwt.exp.access}") Long accessExp,
             @Value("${spring.security.jwt.exp.refresh}") Long refreshExp,
-            TimeHolder timeHolder,
-            TokenParser tokenParser
+            TimeHolder timeHolder
     ) {
         this.secretKey = secretKey;
         this.accessExp = accessExp;
         this.refreshExp = refreshExp;
         this.timeHolder = timeHolder;
-        this.tokenParser = tokenParser;
     }
 
     public TokenPair issue(Auth auth) {
@@ -45,35 +39,11 @@ public class TokenGenerator {
         String accessToken = generateAccessToken(subject, now);
         String refreshToken = generateRefreshToken(subject, now);
         return new TokenPair(
-                auth,
+                auth.id(),
                 accessToken,
                 now + accessExp,
                 refreshToken,
                 now + refreshExp
-        );
-    }
-
-    public TokenPair reissue(Auth auth, String refreshToken) {
-        Long now = timeHolder.now();
-        String subject = auth.getUsername();
-        String accessToken = generateAccessToken(subject, now);
-        Long expiration = tokenParser.parseExpiration(refreshToken);
-        if (now >= expiration - ONE_WEEK_IN_MS) {
-            String newRefreshToken = generateRefreshToken(subject, now);
-            return new TokenPair(
-                    auth,
-                    accessToken,
-                    now + accessExp,
-                    newRefreshToken,
-                    now + refreshExp
-            );
-        }
-        return new TokenPair(
-                auth,
-                accessToken,
-                now + accessExp,
-                null,
-                null
         );
     }
 

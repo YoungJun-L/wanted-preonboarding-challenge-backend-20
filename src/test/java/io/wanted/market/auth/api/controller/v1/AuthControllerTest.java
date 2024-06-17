@@ -161,8 +161,8 @@ class AuthControllerTest extends RestDocsTest {
                                                 .description("status"),
                                         fieldWithPath("data").type(JsonFieldType.OBJECT)
                                                 .description("data"),
-                                        fieldWithPath("data.id").type(JsonFieldType.NUMBER)
-                                                .description("id"),
+                                        fieldWithPath("data.userId").type(JsonFieldType.NUMBER)
+                                                .description("userId"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
                                 )

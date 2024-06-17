@@ -16,10 +16,12 @@ public enum AuthErrorType {
     AUTH_BAD_CREDENTIALS_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4011, "아이디 또는 비밀번호가 틀립니다.", LogLevel.INFO),
     AUTH_DUPLICATE_ERROR(HttpStatus.BAD_REQUEST, AuthErrorCode.E4002, "이미 존재하는 아이디입니다.", LogLevel.INFO),
     AUTH_LOCKED_ERROR(HttpStatus.FORBIDDEN, AuthErrorCode.E4031, "이용이 제한된 유저입니다.", LogLevel.WARN),
-    AUTH_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, AuthErrorCode.E4041, "이용이 제한된 유저입니다.", LogLevel.WARN),
+    AUTH_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, AuthErrorCode.E4041, "계정이 존재하지 않습니다.", LogLevel.INFO),
 
     // token
-    TOKEN_INVALID_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.INFO),
+    TOKEN_INVALID_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
+    TOKEN_NOT_EXPIRED_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
+    TOKEN_NOT_FOUND_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
     TOKEN_EXPIRED_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4013, "토큰이 만료되었습니다.", LogLevel.INFO);
 
     private final HttpStatus status;

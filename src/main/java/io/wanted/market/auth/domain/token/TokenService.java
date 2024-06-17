@@ -8,25 +8,25 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class TokenService {
+    private final TokenPairGenerator tokenPairGenerator;
+
     private final TokenWriter tokenWriter;
 
-    private final TokenGenerator tokenGenerator;
-
-    private final TokenParser tokenParser;
+    private final TokenReader tokenReader;
 
     private final AuthReader authReader;
 
     public TokenPair issue(Auth auth) {
-        TokenPair tokenPair = tokenGenerator.issue(auth);
-        tokenWriter.write(auth, tokenPair);
+        TokenPair tokenPair = tokenPairGenerator.issue(auth);
+        tokenWriter.write(tokenPair);
         return tokenPair;
     }
 
     public TokenPair reissue(String refreshToken) {
-        String authId = tokenParser.parseSubject(refreshToken);
-        Auth auth = authReader.readEnabled(Long.valueOf(authId));
-        TokenPair tokenPair = tokenGenerator.reissue(auth, refreshToken);
-        tokenWriter.write(auth, tokenPair);
+        Token token = tokenReader.readVerified(refreshToken);
+        Auth auth = authReader.findEnabled(token.authId());
+        TokenPair tokenPair = tokenPairGenerator.issue(auth);
+        tokenWriter.write(tokenPair);
         return tokenPair;
     }
 }
