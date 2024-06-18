@@ -44,7 +44,7 @@ public class ApiControllerAdvice {
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
     })
-    public ResponseEntity<ApiResponse<?>> handleBadRequest(final Exception ex) {
+    public ResponseEntity<ApiResponse<?>> handleBadRequest(Exception ex) {
         log.warn("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -52,7 +52,7 @@ public class ApiControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    private ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+    private ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.warn("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

@@ -1,4 +1,4 @@
-package io.wanted.market.auth.api.filter;
+package io.wanted.market.auth.api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
@@ -23,7 +23,11 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
+    public void commence(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException ex
+    ) throws IOException {
         AuthErrorType authErrorType = resolve(ex);
         log(ex, authErrorType);
         write(response, authErrorType);
@@ -31,7 +35,9 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private AuthErrorType resolve(AuthenticationException ex) {
         AuthErrorType authErrorType;
-        if (ex instanceof BadCredentialsException) {
+        if (ex instanceof BadTokenException) {
+            authErrorType = AuthErrorType.TOKEN_INVALID_ERROR;
+        } else if (ex instanceof BadCredentialsException) {
             authErrorType = AuthErrorType.AUTH_BAD_CREDENTIALS_ERROR;
         } else {
             authErrorType = AuthErrorType.UNAUTHORIZED_ERROR;

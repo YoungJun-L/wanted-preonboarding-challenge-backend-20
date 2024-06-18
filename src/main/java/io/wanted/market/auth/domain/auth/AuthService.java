@@ -1,7 +1,6 @@
 package io.wanted.market.auth.domain.auth;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ public class AuthService implements UserDetailsService {
     private final AuthWriter authWriter;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public Auth loadUserByUsername(String username) {
         return authReader.readEnabled(username);
     }
 

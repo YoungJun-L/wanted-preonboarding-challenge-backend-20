@@ -1,4 +1,4 @@
-package io.wanted.market.auth.api.filter;
+package io.wanted.market.auth.api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.auth.api.controller.v1.response.LoginResponseDto;

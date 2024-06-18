@@ -44,7 +44,7 @@ public class AuthControllerAdvice {
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
     })
-    public ResponseEntity<AuthResponse<?>> handleBadRequest(final Exception ex) {
+    public ResponseEntity<AuthResponse<?>> handleBadRequest(Exception ex) {
         log.warn("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -52,7 +52,7 @@ public class AuthControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    private ResponseEntity<AuthResponse<?>> handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+    private ResponseEntity<AuthResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.warn("Bad Request: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
