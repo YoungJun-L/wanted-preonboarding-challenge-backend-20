@@ -1,9 +1,6 @@
 package io.wanted.market.auth.api.security.config;
 
-import io.wanted.market.auth.api.security.filter.AllowedRequestMatcher;
-import io.wanted.market.auth.api.security.filter.BearerTokenResolver;
-import io.wanted.market.auth.api.security.filter.JwtAuthenticationFilter;
-import io.wanted.market.auth.api.security.filter.JwtAuthenticationProvider;
+import io.wanted.market.auth.api.security.filter.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -21,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -42,6 +40,8 @@ public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final AuthDetailsExchangeFilter authDetailsExchangeFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(authDetailsExchangeFilter, AuthorizationFilter.class)
                 .authenticationManager(authenticationManager())
                 .requestCache(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)

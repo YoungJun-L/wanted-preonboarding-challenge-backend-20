@@ -2,23 +2,33 @@ package io.wanted.market.auth.api.security.filter;
 
 import io.wanted.market.auth.domain.auth.Auth;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Map;
 
+@Getter
 @EqualsAndHashCode(callSuper = false)
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final Long userId;
 
-    private JwtAuthenticationToken(Long userId, Collection<? extends GrantedAuthority> authorities) {
+    private final Map<String, String> details;
+
+    private JwtAuthenticationToken(
+            Long userId,
+            Map<String, String> details,
+            Collection<? extends GrantedAuthority> authorities
+    ) {
         super(authorities);
         this.userId = userId;
+        this.details = details;
         super.setAuthenticated(true);
     }
 
     public static JwtAuthenticationToken authenticated(Auth auth) {
-        return new JwtAuthenticationToken(auth.id(), auth.getAuthorities());
+        return new JwtAuthenticationToken(auth.id(), auth.details(), auth.getAuthorities());
     }
 
     @Override
