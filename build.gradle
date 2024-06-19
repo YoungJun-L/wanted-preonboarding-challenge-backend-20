@@ -66,6 +66,12 @@ tasks.register('restdocsTest', Test) {
     }
 }
 
+tasks.register('security', Test) {
+    useJUnitPlatform {
+        includeTags 'security'
+    }
+}
+
 ext {
     snippetsDir = file('build/generated-snippets')
 }
