@@ -60,11 +60,7 @@ class SecurityTestConfig {
                         .requestMatchers(AllowedRequestMatcher.matchers()).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/auth/login")
-                        .successHandler(authenticationSuccessHandler())
-                        .failureHandler(authenticationFailureHandler())
-                )
+                .addFilterAt(requestBodyUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint())
                 )
@@ -79,6 +75,16 @@ class SecurityTestConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
         return http.build();
+    }
+
+    @Bean
+    public RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
+        return new RequestBodyUsernamePasswordAuthenticationFilter(
+                authenticationManager(),
+                authenticationSuccessHandler(),
+                authenticationFailureHandler(),
+                objectMapper()
+        );
     }
 
     @Bean

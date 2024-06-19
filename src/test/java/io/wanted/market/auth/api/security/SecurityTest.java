@@ -1,5 +1,6 @@
 package io.wanted.market.auth.api.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.auth.domain.auth.AuthService;
 import io.wanted.market.auth.domain.token.TokenParser;
 import io.wanted.market.auth.domain.token.TokenService;
@@ -22,6 +23,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @SpringJUnitWebConfig(SecurityTestConfig.class)
 public abstract class SecurityTest {
     protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Autowired
     protected AuthService authService;

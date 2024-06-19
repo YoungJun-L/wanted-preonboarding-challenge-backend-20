@@ -1,5 +1,6 @@
 package io.wanted.market.auth.api.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.auth.api.security.filter.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -42,6 +43,8 @@ public class SecurityConfig {
 
     private final AuthDetailsExchangeFilter authDetailsExchangeFilter;
 
+    private final ObjectMapper objectMapper;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -49,16 +52,13 @@ public class SecurityConfig {
                         .requestMatchers(AllowedRequestMatcher.matchers()).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/auth/login")
-                        .successHandler(authenticationSuccessHandler)
-                        .failureHandler(authenticationFailureHandler())
-                )
+                .addFilterAt(requestBodyUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(authDetailsExchangeFilter, AuthorizationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
-                .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(authDetailsExchangeFilter, AuthorizationFilter.class)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authenticationManager(authenticationManager())
                 .requestCache(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
@@ -68,6 +68,16 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
         return http.build();
+    }
+
+    @Bean
+    public RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
+        return new RequestBodyUsernamePasswordAuthenticationFilter(
+                authenticationManager(),
+                authenticationSuccessHandler,
+                authenticationFailureHandler(),
+                objectMapper
+        );
     }
 
     @Bean

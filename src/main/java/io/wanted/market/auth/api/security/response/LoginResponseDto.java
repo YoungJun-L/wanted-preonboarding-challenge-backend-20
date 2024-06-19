@@ -1,5 +1,6 @@
-package io.wanted.market.auth.api.controller.v1.response;
+package io.wanted.market.auth.api.security.response;
 
+import io.wanted.market.auth.api.controller.v1.response.TokenResponseDto;
 import io.wanted.market.auth.domain.token.TokenPair;
 
 public record LoginResponseDto(
