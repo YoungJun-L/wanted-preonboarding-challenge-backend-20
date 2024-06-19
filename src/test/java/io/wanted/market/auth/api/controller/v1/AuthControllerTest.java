@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.nio.charset.StandardCharsets;
+
 import static io.wanted.market.RestDocsUtils.requestPreprocessor;
 import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AuthControllerTest extends RestDocsTest {
-    private static final String USER_ID = "userId";
-
     private static final String VALID_USERNAME = "username123";
 
     private static final String VALID_PASSWORD = "password123!";
@@ -38,106 +38,13 @@ class AuthControllerTest extends RestDocsTest {
         return new AuthController(authService);
     }
 
-    //    @DisplayName("로그인 성공")
-//    @Test
-//    void login() throws Exception {
-//        LoginRequestDto request = new LoginRequestDto(VALID_USERNAME, VALID_PASSWORD);
-//
-//        given(tokenService.issue(anyString())).willReturn(buildTokenPair());
-//
-//        mockMvc.perform(
-//                        post("/auth/login")
-//                                .content(objectMapper.writeValueAsString(request))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andDo(document("login",
-//                                requestPreprocessor(),
-//                                responsePreprocessor(),
-//                                requestFields(
-//                                        fieldWithPath("username").type(JsonFieldType.STRING)
-//                                                .description("username"),
-//                                        fieldWithPath("password").type(JsonFieldType.STRING)
-//                                                .description("password")),
-//                                responseFields(
-//                                        fieldWithPath("status").type(JsonFieldType.STRING)
-//                                                .description("status"),
-//                                        fieldWithPath("data").type(JsonFieldType.OBJECT)
-//                                                .description("data"),
-//                                        fieldWithPath("data.userId").type(JsonFieldType.STRING)
-//                                                .description("발급 userId"),
-//                                        fieldWithPath("data.tokens").type(JsonFieldType.OBJECT)
-//                                                .description("tokens"),
-//                                        fieldWithPath("data.tokens.accessToken").type(JsonFieldType.STRING)
-//                                                .description("accessToken"),
-//                                        fieldWithPath("data.tokens.accessTokenExpiresIn").type(JsonFieldType.NUMBER)
-//                                                .description("accessToken 만료 시간"),
-//                                        fieldWithPath("data.tokens.refreshToken").type(JsonFieldType.STRING)
-//                                                .description("refreshToken"),
-//                                        fieldWithPath("data.tokens.refreshTokenExpiresIn").type(JsonFieldType.NUMBER)
-//                                                .description("refreshToken 만료 시간"),
-//                                        fieldWithPath("error").type(JsonFieldType.NULL)
-//                                                .description("error")
-//                                )
-//                        )
-//                );
-//    }
-//
-//    @DisplayName("유효하지 않은 아이디로 로그인 시 실패한다.")
-//    @ParameterizedTest
-//    @ValueSource(strings = {
-//            "", // Empty String
-//            "abcd123", // Less than 8 characters
-//            "0123456789abcdefghijabcdefghijabcdefghijabcdefghij", // 50 characters
-//            "abcdefgh", // Only characters
-//            "01234567", // Only digits
-//            "abcdef 123", // Contain whitespace
-//    })
-//    void loginWithInvalidUsername(String invalidUsername) throws Exception {
-//        LoginRequestDto request = new LoginRequestDto(invalidUsername, VALID_PASSWORD);
-//
-//        given(tokenService.issue(anyString())).willReturn(null);
-//
-//        mockMvc.perform(
-//                        post("/auth/login")
-//                                .content(objectMapper.writeValueAsString(request))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andDo(print())
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @DisplayName("유효하지 않은 비밀번호로 로그인 시 실패한다.")
-//    @ParameterizedTest
-//    @ValueSource(strings = {
-//            "", // Empty String
-//            "abcdef123", // Less than 10 characters
-//            "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij", // 50 characters
-//            "abcdefgh", // Only characters
-//            "01234567", // Only digits
-//            "!@#$%^&*", // Only special characters
-//            "abcdef 123 !", // Contain whitespace
-//    })
-//    void loginWithInvalidPassword(String invalidPassword) throws Exception {
-//        LoginRequestDto request = new LoginRequestDto(VALID_USERNAME, invalidPassword);
-//
-//        given(tokenService.issue(anyString())).willReturn(null);
-//
-//        mockMvc.perform(
-//                        post("/auth/login")
-//                                .content(objectMapper.writeValueAsString(request))
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                )
-//                .andDo(print())
-//                .andExpect(status().isBadRequest());
-//    }
     @DisplayName("회원가입 성공")
     @Test
     void register() throws Exception {
         RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, VALID_PASSWORD);
 
-        given(authService.register(any(NewAuth.class))).willReturn(new Auth(1L, "username", "password", AuthStatus.ENABLED));
+        given(authService.register(any(NewAuth.class)))
+                .willReturn(new Auth(1L, "username", "password", AuthStatus.ENABLED));
 
         mockMvc.perform(
                         post("/auth/register")
@@ -145,6 +52,7 @@ class AuthControllerTest extends RestDocsTest {
                                 .param("password", "password")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -191,6 +99,7 @@ class AuthControllerTest extends RestDocsTest {
                                 .param("password", "password")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
@@ -218,6 +127,7 @@ class AuthControllerTest extends RestDocsTest {
                                 .param("password", "password")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());

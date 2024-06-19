@@ -12,6 +12,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import java.nio.charset.StandardCharsets;
+
 import static io.wanted.market.RestDocsUtils.requestPreprocessor;
 import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,6 +52,7 @@ class TokenControllerTest extends RestDocsTest {
                         post("/auth/reissue")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -95,6 +98,7 @@ class TokenControllerTest extends RestDocsTest {
                         post("/auth/reissue")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
