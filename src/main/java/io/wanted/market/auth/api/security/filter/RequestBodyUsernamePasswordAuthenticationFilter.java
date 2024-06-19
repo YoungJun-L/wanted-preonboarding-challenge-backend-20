@@ -35,13 +35,18 @@ public class RequestBodyUsernamePasswordAuthenticationFilter extends AbstractAut
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        if (!request.getMethod().equals("POST")) {
+            throw new BadCredentialsException("Method not supported");
+        }
+
+        LoginRequestDto loginRequestDto;
         try {
-            LoginRequestDto loginRequestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
-            UsernamePasswordAuthenticationToken authRequest =
-                    UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDto.username(), loginRequestDto.password());
-            return this.getAuthenticationManager().authenticate(authRequest);
+            loginRequestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
         } catch (Exception ex) {
             throw new BadCredentialsException(ex.getMessage(), ex);
         }
+        UsernamePasswordAuthenticationToken authRequest =
+                UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDto.username(), loginRequestDto.password());
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 }
