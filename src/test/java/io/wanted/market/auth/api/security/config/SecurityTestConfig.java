@@ -1,4 +1,4 @@
-package io.wanted.market.auth.api.security;
+package io.wanted.market.auth.api.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -9,6 +9,7 @@ import io.wanted.market.auth.domain.token.TokenParser;
 import io.wanted.market.auth.domain.token.TokenService;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,12 +26,14 @@ import org.springframework.security.web.authentication.AuthenticationEntryPointF
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.mockito.Mockito.mock;
 
 @EnableWebSecurity
 @TestConfiguration
-class SecurityTestConfig {
+public class SecurityTestConfig {
     @Bean
     AuthService authService() {
         return mock(AuthService.class);
@@ -78,7 +81,7 @@ class SecurityTestConfig {
     }
 
     @Bean
-    public RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
+    RequestBodyUsernamePasswordAuthenticationFilter requestBodyUsernamePasswordAuthenticationFilter() {
         return new RequestBodyUsernamePasswordAuthenticationFilter(
                 authenticationManager(),
                 authenticationSuccessHandler(),
@@ -144,5 +147,13 @@ class SecurityTestConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new StubPasswordEncoder();
+    }
+
+    @RestController
+    static class TestController {
+        @GetMapping("/test")
+        public ResponseEntity<Void> test() {
+            return ResponseEntity.ok().build();
+        }
     }
 }

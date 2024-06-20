@@ -1,6 +1,7 @@
 package io.wanted.market.auth.api.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.wanted.market.auth.api.security.config.SecurityTestConfig;
 import io.wanted.market.auth.domain.auth.AuthService;
 import io.wanted.market.auth.domain.token.TokenParser;
 import io.wanted.market.auth.domain.token.TokenService;
