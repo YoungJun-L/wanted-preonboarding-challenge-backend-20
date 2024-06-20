@@ -64,7 +64,7 @@ public class AuthControllerAdvice {
             NoResourceFoundException.class
     })
     public ResponseEntity<AuthResponse<?>> handleNotFoundException(Exception ex) {
-        log.debug("NotFound: {}", ex.getMessage());
+        log.info("NotFound: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(AuthResponse.error(AuthErrorType.NOT_FOUND_ERROR));
