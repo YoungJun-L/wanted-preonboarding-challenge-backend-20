@@ -42,6 +42,11 @@ public class AuthDetailsExchangeFilter extends OncePerRequestFilter {
         filterChain.doFilter(authRequest, response);
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return Arrays.stream(AllowedRequestMatcher.matchers()).anyMatch(m -> m.matches(request));
+    }
+
     private static class AuthRequest extends HttpServletRequestWrapper {
         private static final String AUTH_COOKIE_NAME = "user";
 

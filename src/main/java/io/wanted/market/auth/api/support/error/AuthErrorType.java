@@ -20,7 +20,6 @@ public enum AuthErrorType {
 
     // token
     TOKEN_INVALID_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
-    TOKEN_NOT_EXPIRED_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
     TOKEN_NOT_FOUND_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4012, "토큰이 유효하지 않습니다.", LogLevel.WARN),
     TOKEN_EXPIRED_ERROR(HttpStatus.UNAUTHORIZED, AuthErrorCode.E4013, "토큰이 만료되었습니다.", LogLevel.INFO);
 

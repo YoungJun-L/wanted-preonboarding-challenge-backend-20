@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.auth.api.security.request.LoginRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +15,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 public class RequestBodyUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/auth/login");
+    private static final AntPathRequestMatcher LOGIN_REQUEST_MATCHER =
+            AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/login");
 
     private final ObjectMapper objectMapper;
 
@@ -24,7 +26,7 @@ public class RequestBodyUsernamePasswordAuthenticationFilter extends AbstractAut
             AuthenticationFailureHandler authenticationFailureHandler,
             ObjectMapper objectMapper
     ) {
-        super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
+        super(LOGIN_REQUEST_MATCHER, authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(authenticationFailureHandler);
         this.objectMapper = objectMapper;
@@ -35,10 +37,6 @@ public class RequestBodyUsernamePasswordAuthenticationFilter extends AbstractAut
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (!request.getMethod().equals("POST")) {
-            throw new BadCredentialsException("Method not supported");
-        }
-
         LoginRequestDto loginRequestDto;
         try {
             loginRequestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);

@@ -22,7 +22,7 @@ public class BearerTokenResolver {
         }
         Matcher matcher = authorizationPattern.matcher(authorization);
         if (!matcher.matches()) {
-            throw new BadCredentialsException("Invalid authentication");
+            throw new BadCredentialsException("잘못된 접근입니다.");
         }
         return matcher.group("token");
     }
