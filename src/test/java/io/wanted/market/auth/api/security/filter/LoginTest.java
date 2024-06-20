@@ -18,7 +18,6 @@ import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,7 +79,7 @@ class LoginTest extends SecurityTest {
         given(authService.loadUserByUsername("username")).willThrow(new UsernameNotFoundException("error"));
 
         mockMvc.perform(
-                        get("/auth/login")
+                        post("/auth/login")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding(StandardCharsets.UTF_8)
