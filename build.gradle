@@ -66,7 +66,7 @@ tasks.register('restdocsTest', Test) {
     }
 }
 
-tasks.register('security', Test) {
+tasks.register('securityTest', Test) {
     useJUnitPlatform {
         includeTags 'security'
     }
