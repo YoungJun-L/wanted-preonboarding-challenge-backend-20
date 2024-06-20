@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -47,7 +48,7 @@ public class AuthDetailsExchangeFilter extends OncePerRequestFilter {
 
         private AuthRequest(HttpServletRequest request, String token) {
             super(request);
-            Cookie[] original = request.getCookies();
+            Cookie[] original = Optional.ofNullable(request.getCookies()).orElse(new Cookie[]{});
             cookies = Arrays.copyOf(original, original.length + 1);
             cookies[original.length] = new Cookie(AUTH_COOKIE_NAME, token);
         }
