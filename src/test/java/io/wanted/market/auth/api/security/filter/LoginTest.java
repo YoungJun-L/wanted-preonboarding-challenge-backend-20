@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.nio.charset.StandardCharsets;
 
@@ -72,10 +73,11 @@ class LoginTest extends SecurityTest {
                 );
     }
 
-    @DisplayName("로그인 실패")
+    @DisplayName("가입하지 않은 회원이 로그인 시 실패한다.")
     @Test
     void loginFailed() throws Exception {
         LoginRequestDto request = new LoginRequestDto("username", "password");
+        given(authService.loadUserByUsername("username")).willThrow(new UsernameNotFoundException("error"));
 
         mockMvc.perform(
                         get("/auth/login")
