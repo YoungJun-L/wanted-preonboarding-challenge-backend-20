@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -30,11 +32,10 @@ public class AuthDetailsExchangeFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof JwtAuthenticationToken)) {
-            filterChain.doFilter(request, response);
-            return;
+        if (Objects.isNull(authentication)) {
+            throw new AuthenticationServiceException("Authentication object should not be null.");
         }
-        AuthDetails authDetails = AuthDetails.from((JwtAuthenticationToken) authentication);
+        AuthDetails authDetails = AuthDetails.from(authentication);
         String token = objectMapper.writeValueAsString(authDetails);
         AuthRequest authRequest = new AuthRequest(request, token);
         SecurityContextHolder.clearContext();
@@ -59,9 +60,12 @@ public class AuthDetailsExchangeFilter extends OncePerRequestFilter {
         }
     }
 
-    private record AuthDetails(Long userId, Map<String, String> details) {
-        private static AuthDetails from(JwtAuthenticationToken jwtAuthenticationToken) {
-            return new AuthDetails(jwtAuthenticationToken.getUserId(), jwtAuthenticationToken.getDetails());
+    private record AuthDetails(Object userId, Object details) {
+        private static AuthDetails from(Authentication authentication) {
+            if (authentication instanceof AnonymousAuthenticationToken) {
+                return new AuthDetails(-1L, null);
+            }
+            return new AuthDetails(authentication.getPrincipal(), authentication.getDetails());
         }
     }
 }
