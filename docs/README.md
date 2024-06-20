@@ -16,8 +16,9 @@
     - 로그인 성공 시 14일간 유효한 refresh token 생성
     - 기존에 존재하는 token 제거
 - [x] token 재발급
-    - access token 이 만료되었을 때만 access token, refresh token 재발급
+    - access token, refresh token 신규 발급
     - refresh token 이 만료되면 실패
+    - 기존에 존재하는 token 제거
 - [x] 회원 유효성 검사
     - PW가 일치하지 않으면 발급 실패
     - 가입하지 않은 회원은 (재)발급 실패
@@ -25,7 +26,7 @@
 
 ### 인증
 
-- [ ] access token 인증
+- [x] access token 인증
     - 만료된 토큰은 인증 실패
     - 위조된 토큰은 인증 실패
 
