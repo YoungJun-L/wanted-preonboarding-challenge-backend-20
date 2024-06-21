@@ -197,6 +197,22 @@ class TokenServiceTest extends ContextTest {
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.TOKEN_NOT_FOUND_ERROR);
     }
 
+    @DisplayName("토큰 재발급 시 서비스 이용이 제한된 회원이면 실패한다.")
+    @Test
+    void reissueWithLockedUser() {
+        // given
+        AuthEntity authEntity = new AuthEntity("username", "password", AuthStatus.LOCKED);
+        AuthEntity savedAuth = authJpaRepository.save(authEntity);
+
+        String refreshToken = buildToken(savedAuth.getId(), Duration.ofDays(30L).toMillis());
+        TokenEntity tokenEntity = new TokenEntity(savedAuth.getId(), refreshToken);
+        tokenJpaRepository.save(tokenEntity);
+
+        // when & then
+        AuthException ex = assertThrows(AuthException.class, () -> tokenService.reissue(refreshToken));
+        assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.AUTH_LOCKED_ERROR);
+    }
+
     @DisplayName("토큰 재발급 시 이전 토큰은 제거된다.")
     @Test
     void reissueShouldRemoveOldToken() {

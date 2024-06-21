@@ -74,9 +74,26 @@ class LoginTest extends SecurityTest {
 
     @DisplayName("가입하지 않은 회원이 로그인 시 실패한다.")
     @Test
-    void loginFailed() throws Exception {
+    void loginFailedWithNotRegisteredUser() throws Exception {
         LoginRequestDto request = new LoginRequestDto("username", "password");
         given(authService.loadUserByUsername("username")).willThrow(new UsernameNotFoundException("error"));
+
+        mockMvc.perform(
+                        post("/auth/login")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding(StandardCharsets.UTF_8)
+                )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("서비스 이용이 불가능한 회원이 로그인 시 실패한다.")
+    @Test
+    void loginFailedWithLockedUser() throws Exception {
+        LoginRequestDto request = new LoginRequestDto("username", "password");
+        Auth auth = new Auth(1L, "username", "password", AuthStatus.LOCKED);
+        given(authService.loadUserByUsername("username")).willReturn(auth);
 
         mockMvc.perform(
                         post("/auth/login")
