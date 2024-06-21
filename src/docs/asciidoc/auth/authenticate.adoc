@@ -1,0 +1,13 @@
+Api 호출 시 필요
+
+==== Curl Request
+
+include::{snippets}/authenticate/curl-request.adoc[]
+
+==== Request Headers
+
+include::{snippets}/authenticate/request-headers.adoc[]
+
+==== Http Response
+
+include::{snippets}/authenticate/http-response.adoc[]

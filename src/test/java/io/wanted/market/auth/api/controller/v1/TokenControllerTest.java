@@ -26,11 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class TokenControllerTest extends RestDocsTest {
-    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String ACCESS_TOKEN = "${ACCESS_TOKEN}";
 
     private static final Long ACCESS_TOKEN_EXPIRES_IN = 1L;
 
-    private static final String REFRESH_TOKEN = "refreshToken";
+    private static final String REFRESH_TOKEN = "${REFRESH_TOKEN}";
 
     private static final Long REFRESH_TOKEN_EXPIRES_IN = 1L;
 
@@ -44,7 +44,7 @@ class TokenControllerTest extends RestDocsTest {
     @DisplayName("재발급 성공")
     @Test
     void reissue() throws Exception {
-        ReissueRequestDto request = new ReissueRequestDto("refreshToken");
+        ReissueRequestDto request = new ReissueRequestDto("${REFRESH_TOKEN}");
 
         given(tokenService.reissue(anyString())).willReturn(buildTokenPair());
 
@@ -70,11 +70,11 @@ class TokenControllerTest extends RestDocsTest {
                                         fieldWithPath("data.accessToken").type(JsonFieldType.STRING)
                                                 .description("accessToken"),
                                         fieldWithPath("data.accessTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("accessToken 만료 시간"),
+                                                .description("accessToken 만료 시간, UNIX 타임스탬프(Timestamp)"),
                                         fieldWithPath("data.refreshToken").type(JsonFieldType.STRING)
                                                 .description("refreshToken"),
                                         fieldWithPath("data.refreshTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("refreshToken 만료 시간"),
+                                                .description("refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
                                 )
@@ -106,7 +106,7 @@ class TokenControllerTest extends RestDocsTest {
 
     private TokenPair buildTokenPair() {
         return new TokenPair(
-                -1L,
+                1L,
                 ACCESS_TOKEN,
                 ACCESS_TOKEN_EXPIRES_IN,
                 REFRESH_TOKEN,

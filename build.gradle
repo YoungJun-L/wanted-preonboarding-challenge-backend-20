@@ -8,11 +8,13 @@ plugins {
 group = 'io.wanted'
 version = '0.0.1'
 
-bootJar.enabled = false
-jar.enabled = true
+bootJar.enabled = true
+jar.enabled = false
 
 java {
-    sourceCompatibility = '17'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 configurations {
@@ -73,7 +75,7 @@ tasks.register('securityTest', Test) {
 }
 
 ext {
-    snippetsDir = file('build/generated-snippets')
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 test {

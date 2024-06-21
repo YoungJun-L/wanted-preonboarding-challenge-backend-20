@@ -197,7 +197,7 @@ class TokenServiceTest extends ContextTest {
         assertThat(ex.getAuthErrorType()).isEqualTo(AuthErrorType.TOKEN_NOT_FOUND_ERROR);
     }
 
-    @DisplayName("토큰 재발급 시 서비스 이용이 제한된 회원이면 실패한다.")
+    @DisplayName("토큰 재발급 시 서비스 가이용이 제한된 회원이면 실패한다.")
     @Test
     void reissueWithLockedUser() {
         // given

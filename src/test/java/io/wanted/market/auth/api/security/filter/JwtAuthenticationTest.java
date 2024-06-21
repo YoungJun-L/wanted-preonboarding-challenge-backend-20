@@ -20,14 +20,14 @@ class JwtAuthenticationTest extends SecurityTest {
     @DisplayName("JWT 인증 성공")
     @Test
     void jwtAuthenticate() throws Exception {
-        String token = "token";
+        String accessToken = "accessToken";
         Auth auth = new Auth(1L, "username", "password", AuthStatus.ENABLED);
-        given(tokenParser.parseSubject(token)).willReturn("username");
+        given(tokenParser.parseSubject(accessToken)).willReturn("username");
         given(authService.loadUserByUsername("username")).willReturn(auth);
 
         mockMvc.perform(
                         get("/test")
-                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())

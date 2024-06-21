@@ -1,0 +1,17 @@
+토큰 재발급
+
+==== Curl Request
+
+include::{snippets}/reissue/curl-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/reissue/request-fields.adoc[]
+
+==== Http Response
+
+include::{snippets}/reissue/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/reissue/response-fields.adoc[]

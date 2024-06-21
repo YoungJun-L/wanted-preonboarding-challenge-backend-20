@@ -26,10 +26,11 @@ class LoginTest extends SecurityTest {
     @DisplayName("로그인 성공")
     @Test
     void login() throws Exception {
-        LoginRequestDto request = new LoginRequestDto("username", "password");
-        Auth auth = new Auth(1L, "username", "password", AuthStatus.ENABLED);
-        given(authService.loadUserByUsername("username")).willReturn(auth);
-        given(tokenService.issue(auth)).willReturn(new TokenPair(auth.id(), "accessToken", 1L, "refreshToken", 1L));
+        LoginRequestDto request = new LoginRequestDto("${USERNAME}", "${PASSWORD}");
+        Auth auth = new Auth(1L, "${USERNAME}", "${PASSWORD}", AuthStatus.ENABLED);
+        given(authService.loadUserByUsername("${USERNAME}")).willReturn(auth);
+        given(tokenService.issue(auth))
+                .willReturn(new TokenPair(auth.id(), "${ACCESS_TOKEN}", 1L, "${REFRESH_TOKEN}", 1L));
 
         mockMvc.perform(
                         post("/auth/login")
@@ -60,11 +61,11 @@ class LoginTest extends SecurityTest {
                                         fieldWithPath("data.tokens.accessToken").type(JsonFieldType.STRING)
                                                 .description("accessToken"),
                                         fieldWithPath("data.tokens.accessTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("accessToken 만료 시간"),
+                                                .description("accessToken 만료 시간, UNIX 타임스탬프(Timestamp)"),
                                         fieldWithPath("data.tokens.refreshToken").type(JsonFieldType.STRING)
                                                 .description("refreshToken"),
                                         fieldWithPath("data.tokens.refreshTokenExpiresIn").type(JsonFieldType.NUMBER)
-                                                .description("refreshToken 만료 시간"),
+                                                .description("refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
                                 )

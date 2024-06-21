@@ -9,9 +9,10 @@ import java.util.Arrays;
 
 @Getter
 public enum AllowedRequestMatcher {
-    REGISTER(AntPathRequestMatcher.antMatcher("/auth/register")),
-    REISSUE(AntPathRequestMatcher.antMatcher("/auth/token")),
+    REGISTER(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/register")),
+    REISSUE(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/token")),
     H2_CONSOLE(AntPathRequestMatcher.antMatcher("/h2-console/**")),
+    API_DOCS(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/docs/**")),
     HEALTH(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/health"));
 
     private final RequestMatcher matcher;

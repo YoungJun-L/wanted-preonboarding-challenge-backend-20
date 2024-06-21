@@ -48,8 +48,6 @@ class AuthControllerTest extends RestDocsTest {
 
         mockMvc.perform(
                         post("/auth/register")
-                                .param("username", "username")
-                                .param("password", "password")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding(StandardCharsets.UTF_8)
@@ -61,9 +59,9 @@ class AuthControllerTest extends RestDocsTest {
                                 responsePreprocessor(),
                                 requestFields(
                                         fieldWithPath("username").type(JsonFieldType.STRING)
-                                                .description("username"),
+                                                .description("username, 최소 8자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 숫자 조합"),
                                         fieldWithPath("password").type(JsonFieldType.STRING)
-                                                .description("password")),
+                                                .description("password, 최소 10자 이상 최대 50자 미만의 1개 이상 영문자, 1개 이상 특수문자, 1개 이상 숫자 조합")),
                                 responseFields(
                                         fieldWithPath("status").type(JsonFieldType.STRING)
                                                 .description("status"),
