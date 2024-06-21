@@ -6,21 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Component
 public class AuthReader {
     private final AuthRepository authRepository;
 
-    public Auth readEnabled(String username) {
-        List<Auth> auths = authRepository.read(username);
-        if (auths.isEmpty()) {
-            throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다.");
-        }
-        Auth auth = auths.get(0);
-        auth.validate();
-        return auth;
+    public Auth read(String username) {
+        return authRepository.read(username)
+                .orElseThrow(() -> new UsernameNotFoundException(AuthErrorType.AUTH_NOT_FOUND_ERROR.getMessage()));
     }
 
     public Auth readEnabled(Long id) {

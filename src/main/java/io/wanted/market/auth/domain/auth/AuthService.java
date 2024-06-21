@@ -13,7 +13,7 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public Auth loadUserByUsername(String username) {
-        return authReader.readEnabled(username);
+        return authReader.read(username);
     }
 
     public Auth register(NewAuth newAuth) {

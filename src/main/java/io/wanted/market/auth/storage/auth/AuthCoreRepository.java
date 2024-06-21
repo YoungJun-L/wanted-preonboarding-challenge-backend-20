@@ -6,7 +6,6 @@ import io.wanted.market.auth.domain.auth.NewAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,10 +17,8 @@ public class AuthCoreRepository implements AuthRepository {
         return Auth.from(authJpaRepository.save(newAuth.toEntity()));
     }
 
-    public List<Auth> read(String username) {
-        return authJpaRepository.findByUsername(username).stream()
-                .map(Auth::from)
-                .toList();
+    public Optional<Auth> read(String username) {
+        return authJpaRepository.findByUsername(username).map(Auth::from);
     }
 
     public boolean existsByUsername(String username) {

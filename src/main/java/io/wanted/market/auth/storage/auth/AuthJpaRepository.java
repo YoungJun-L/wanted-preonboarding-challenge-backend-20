@@ -2,10 +2,10 @@ package io.wanted.market.auth.storage.auth;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface AuthJpaRepository extends JpaRepository<AuthEntity, Long> {
-    List<AuthEntity> findByUsername(String username);
+    Optional<AuthEntity> findByUsername(String username);
 
     boolean existsByUsername(String username);
 }

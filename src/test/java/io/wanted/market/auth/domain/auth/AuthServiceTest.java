@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,9 +54,9 @@ class AuthServiceTest extends ContextTest {
         authService.register(newAuth);
 
         // then
-        List<Auth> actual = authRepository.read(VALID_USERNAME);
+        Optional<Auth> actual = authRepository.read(VALID_USERNAME);
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get(0).getUsername()).isEqualTo(VALID_USERNAME);
+        assertThat(actual.get().getUsername()).isEqualTo(VALID_USERNAME);
     }
 
     @DisplayName("회원가입 시 아이디가 중복되면 실패한다.")
@@ -81,8 +81,8 @@ class AuthServiceTest extends ContextTest {
         authService.register(newAuth);
 
         // then
-        List<Auth> actual = authRepository.read(VALID_USERNAME);
+        Optional<Auth> actual = authRepository.read(VALID_USERNAME);
         assertThat(actual).isNotEmpty();
-        assertThat(passwordEncoder.matches(VALID_PASSWORD, actual.get(0).getPassword())).isTrue();
+        assertThat(passwordEncoder.matches(VALID_PASSWORD, actual.get().getPassword())).isTrue();
     }
 }
