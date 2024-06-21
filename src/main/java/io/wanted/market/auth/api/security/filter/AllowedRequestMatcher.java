@@ -9,22 +9,20 @@ import java.util.Arrays;
 
 @Getter
 public enum AllowedRequestMatcher {
-    REGISTER(HttpMethod.POST, "/auth/register"),
-    REISSUE(HttpMethod.POST, "/auth/token"),
-    HEALTH(HttpMethod.GET, "/health");
+    REGISTER(AntPathRequestMatcher.antMatcher("/auth/register")),
+    REISSUE(AntPathRequestMatcher.antMatcher("/auth/token")),
+    H2_CONSOLE(AntPathRequestMatcher.antMatcher("/h2-console/**")),
+    HEALTH(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/health"));
 
-    private final HttpMethod method;
+    private final RequestMatcher matcher;
 
-    private final String pattern;
-
-    AllowedRequestMatcher(HttpMethod method, String pattern) {
-        this.method = method;
-        this.pattern = pattern;
+    AllowedRequestMatcher(RequestMatcher matcher) {
+        this.matcher = matcher;
     }
 
     public static RequestMatcher[] matchers() {
         return Arrays.stream(AllowedRequestMatcher.values())
-                .map(a -> AntPathRequestMatcher.antMatcher(a.method, a.pattern))
+                .map(a -> a.matcher)
                 .toArray(RequestMatcher[]::new);
     }
 }
