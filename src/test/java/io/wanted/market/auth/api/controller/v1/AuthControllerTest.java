@@ -71,6 +71,7 @@ class AuthControllerTest extends RestDocsTest {
                                                 .description("userId"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
+                                                .ignored()
                                 )
                         )
                 );

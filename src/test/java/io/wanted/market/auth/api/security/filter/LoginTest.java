@@ -68,6 +68,7 @@ class LoginTest extends SecurityTest {
                                                 .description("refreshToken 만료 시간, UNIX 타임스탬프(Timestamp)"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .description("error")
+                                                .ignored()
                                 )
                         )
                 );
