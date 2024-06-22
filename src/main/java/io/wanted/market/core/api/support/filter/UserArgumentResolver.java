@@ -3,7 +3,7 @@ package io.wanted.market.core.api.support.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.wanted.market.core.domain.support.error.CoreErrorType;
 import io.wanted.market.core.domain.support.error.CoreException;
-import io.wanted.market.core.domain.user.ApiUser;
+import io.wanted.market.core.domain.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,14 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Component
-public class ApiUserArgumentResolver implements HandlerMethodArgumentResolver {
+public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     private static final String USER_COOKIE_NAME = "user";
 
     private final ObjectMapper objectMapper;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType() == ApiUser.class;
+        return parameter.getParameterType() == User.class;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ApiUserArgumentResolver implements HandlerMethodArgumentResolver {
                     .filter(c -> c.getName().equals(USER_COOKIE_NAME))
                     .findFirst()
                     .orElseThrow();
-            return objectMapper.readValue(cookie.getValue(), ApiUser.class);
+            return objectMapper.readValue(cookie.getValue(), User.class);
         } catch (Exception ex) {
             throw new CoreException(CoreErrorType.FORBIDDEN_ERROR);
         }

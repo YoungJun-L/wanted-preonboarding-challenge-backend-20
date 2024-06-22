@@ -1,6 +1,6 @@
 package io.wanted.market.core.api.config;
 
-import io.wanted.market.core.api.support.filter.ApiUserArgumentResolver;
+import io.wanted.market.core.api.support.filter.UserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -11,10 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    private final ApiUserArgumentResolver apiUserArgumentResolver;
+    private final UserArgumentResolver userArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(apiUserArgumentResolver);
+        resolvers.add(userArgumentResolver);
     }
 }

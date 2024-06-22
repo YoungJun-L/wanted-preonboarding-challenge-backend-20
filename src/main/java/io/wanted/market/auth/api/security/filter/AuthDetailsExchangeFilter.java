@@ -65,7 +65,7 @@ public class AuthDetailsExchangeFilter extends OncePerRequestFilter {
         }
     }
 
-    private record AuthDetails(Object userId, Object details) {
+    private record AuthDetails(Object id, Object details) {
         private static AuthDetails from(Authentication authentication) {
             if (authentication instanceof AnonymousAuthenticationToken) {
                 return new AuthDetails(-1L, null);
