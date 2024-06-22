@@ -80,6 +80,7 @@ class AuthControllerTest extends RestDocsTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "", // Empty String
+            " ", // Only whitespace
             "abcd123", // Less than 8 characters
             "0123456789abcdefghijabcdefghijabcdefghijabcdefghij", // 50 characters
             "abcdefgh", // Only characters
@@ -107,6 +108,7 @@ class AuthControllerTest extends RestDocsTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "", // Empty String
+            " ", // Only whitespace
             "abcdef123", // Less than 10 characters
             "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij", // 50 characters
             "abcdefgh", // Only characters
