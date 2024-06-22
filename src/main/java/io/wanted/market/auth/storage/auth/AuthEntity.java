@@ -5,13 +5,15 @@ import io.wanted.market.auth.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "auth")
+@Table(name = "auth")
+@Entity
 public class AuthEntity extends BaseEntity {
     private String username;
 

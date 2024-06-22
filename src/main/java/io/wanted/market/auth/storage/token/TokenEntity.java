@@ -2,13 +2,15 @@ package io.wanted.market.auth.storage.token;
 
 import io.wanted.market.core.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "token")
+@Table(name = "token")
+@Entity
 public class TokenEntity extends BaseEntity {
     private Long authId;
 
