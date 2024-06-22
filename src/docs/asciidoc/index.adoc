@@ -29,3 +29,8 @@ include::auth/authenticate.adoc[]
 === Reissue API
 
 include::auth/reissue.adoc[]
+
+[[product]]
+=== Product API
+
+include::auth/product.adoc[]
