@@ -22,13 +22,13 @@ public class TokenCoreRepository implements TokenRepository {
         }
         TokenEntity tokenEntity = new TokenEntity(authId, tokenPair.refreshToken());
         tokenJpaRepository.save(tokenEntity);
-        return Token.from(tokenEntity);
+        return tokenEntity.toToken();
     }
 
     @Override
     public List<Token> read(String refreshToken) {
         return tokenJpaRepository.findByRefreshToken(refreshToken).stream()
-                .map(Token::from)
+                .map(TokenEntity::toToken)
                 .toList();
     }
 }

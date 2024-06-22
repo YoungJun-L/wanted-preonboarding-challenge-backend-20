@@ -2,7 +2,6 @@ package io.wanted.market.auth.domain.auth;
 
 import io.wanted.market.auth.api.support.error.AuthErrorType;
 import io.wanted.market.auth.api.support.error.AuthException;
-import io.wanted.market.auth.storage.auth.AuthEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,10 +10,6 @@ import java.util.Collection;
 import java.util.Map;
 
 public record Auth(Long id, String username, String password, AuthStatus status) implements UserDetails {
-    public static Auth from(AuthEntity entity) {
-        return new Auth(entity.getId(), entity.getUsername(), entity.getPassword(), entity.getStatus());
-    }
-
     @Override
     public String getUsername() {
         return username;

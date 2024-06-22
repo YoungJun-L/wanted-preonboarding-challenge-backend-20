@@ -14,11 +14,18 @@ public class AuthCoreRepository implements AuthRepository {
     private final AuthJpaRepository authJpaRepository;
 
     public Auth write(NewAuth newAuth) {
-        return Auth.from(authJpaRepository.save(newAuth.toEntity()));
+        AuthEntity savedAuth = authJpaRepository.save(
+                new AuthEntity(
+                        newAuth.username(),
+                        newAuth.password(),
+                        newAuth.status()
+                )
+        );
+        return savedAuth.toAuth();
     }
 
     public Optional<Auth> read(String username) {
-        return authJpaRepository.findByUsername(username).map(Auth::from);
+        return authJpaRepository.findByUsername(username).map(AuthEntity::toAuth);
     }
 
     public boolean existsByUsername(String username) {
@@ -26,6 +33,6 @@ public class AuthCoreRepository implements AuthRepository {
     }
 
     public Optional<Auth> read(Long id) {
-        return authJpaRepository.findById(id).map(Auth::from);
+        return authJpaRepository.findById(id).map(AuthEntity::toAuth);
     }
 }

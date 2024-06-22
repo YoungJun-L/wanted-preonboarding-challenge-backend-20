@@ -1,5 +1,6 @@
 package io.wanted.market.auth.storage.auth;
 
+import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
@@ -26,5 +27,9 @@ public class AuthEntity extends BaseEntity {
         this.username = username;
         this.password = password;
         this.status = status;
+    }
+
+    public Auth toAuth() {
+        return new Auth(getId(), username, password, status);
     }
 }

@@ -1,5 +1,6 @@
 package io.wanted.market.auth.storage.token;
 
+import io.wanted.market.auth.domain.token.Token;
 import io.wanted.market.core.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -19,5 +20,9 @@ public class TokenEntity extends BaseEntity {
     public TokenEntity(Long authId, String refreshToken) {
         this.authId = authId;
         this.refreshToken = refreshToken;
+    }
+
+    public Token toToken() {
+        return new Token(authId, refreshToken);
     }
 }

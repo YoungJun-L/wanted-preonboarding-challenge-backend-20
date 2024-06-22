@@ -6,7 +6,6 @@ import io.jsonwebtoken.security.Keys;
 import io.wanted.market.ContextTest;
 import io.wanted.market.auth.api.support.error.AuthErrorType;
 import io.wanted.market.auth.api.support.error.AuthException;
-import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthStatus;
 import io.wanted.market.auth.domain.support.time.TimeHolder;
 import io.wanted.market.auth.storage.auth.AuthEntity;
@@ -70,7 +69,7 @@ class TokenServiceTest extends ContextTest {
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
+        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
         assertDoesNotThrow(() -> jwtParser.parse(tokenPair.accessToken()));
@@ -85,7 +84,7 @@ class TokenServiceTest extends ContextTest {
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
+        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
@@ -101,7 +100,7 @@ class TokenServiceTest extends ContextTest {
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
+        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.accessToken()).getPayload().getExpiration().getTime();
@@ -117,7 +116,7 @@ class TokenServiceTest extends ContextTest {
         AuthEntity savedAuth = authJpaRepository.save(authEntity);
 
         // when
-        TokenPair tokenPair = tokenService.issue(Auth.from(savedAuth));
+        TokenPair tokenPair = tokenService.issue(savedAuth.toAuth());
 
         // then
         Long actual = jwtParser.parseSignedClaims(tokenPair.refreshToken()).getPayload().getExpiration().getTime();
@@ -136,7 +135,7 @@ class TokenServiceTest extends ContextTest {
         TokenEntity savedTokenEntity = tokenJpaRepository.save(tokenEntity);
 
         // when
-        tokenService.issue(Auth.from(savedAuth));
+        tokenService.issue(savedAuth.toAuth());
 
         // then
         List<TokenEntity> tokenEntities = tokenJpaRepository.findByAuthId(savedAuth.getId());
