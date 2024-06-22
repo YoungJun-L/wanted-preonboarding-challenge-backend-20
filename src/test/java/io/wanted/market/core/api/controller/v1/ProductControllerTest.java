@@ -5,6 +5,7 @@ import io.wanted.market.core.api.controller.v1.request.RegisterProductRequestDto
 import io.wanted.market.core.domain.product.NewProduct;
 import io.wanted.market.core.domain.product.Product;
 import io.wanted.market.core.domain.product.ProductService;
+import io.wanted.market.core.domain.product.ProductStatus;
 import io.wanted.market.core.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class ProductControllerTest extends RestDocsTest {
                 BigDecimal.TEN,
                 100L
         );
-        Product product = new Product(1L, 1L, "productName", BigDecimal.TEN, 100L, LocalDateTime.now());
+        Product product = new Product(1L, 1L, "productName", BigDecimal.TEN, 100L, LocalDateTime.now(), ProductStatus.SALE);
 
         given(productService.register(any(User.class), any(NewProduct.class))).willReturn(product);
 

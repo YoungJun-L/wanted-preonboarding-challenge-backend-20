@@ -9,6 +9,7 @@ public record Product(
         String name,
         BigDecimal price,
         Long quantity,
-        LocalDateTime registeredAt
+        LocalDateTime registeredAt,
+        ProductStatus status
 ) {
 }
