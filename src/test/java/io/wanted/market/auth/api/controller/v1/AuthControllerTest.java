@@ -1,7 +1,7 @@
 package io.wanted.market.auth.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
-import io.wanted.market.auth.api.controller.v1.request.RegisterRequestDto;
+import io.wanted.market.auth.api.controller.v1.request.RegisterAuthRequestDto;
 import io.wanted.market.auth.domain.auth.Auth;
 import io.wanted.market.auth.domain.auth.AuthService;
 import io.wanted.market.auth.domain.auth.AuthStatus;
@@ -41,7 +41,7 @@ class AuthControllerTest extends RestDocsTest {
     @DisplayName("회원가입 성공")
     @Test
     void register() throws Exception {
-        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, VALID_PASSWORD);
+        RegisterAuthRequestDto request = new RegisterAuthRequestDto(VALID_USERNAME, VALID_PASSWORD);
 
         given(authService.register(any(NewAuth.class)))
                 .willReturn(new Auth(1L, "username", "password", AuthStatus.ENABLED));
@@ -87,7 +87,7 @@ class AuthControllerTest extends RestDocsTest {
             "abcdef 123", // Contain whitespace
     })
     void registerWithInvalidUsername(String invalidUsername) throws Exception {
-        RegisterRequestDto request = new RegisterRequestDto(invalidUsername, VALID_PASSWORD);
+        RegisterAuthRequestDto request = new RegisterAuthRequestDto(invalidUsername, VALID_PASSWORD);
 
         given(authService.register(any(NewAuth.class))).willReturn(null);
 
@@ -115,7 +115,7 @@ class AuthControllerTest extends RestDocsTest {
             "abcdef 123 !", // Contain whitespace
     })
     void registerWithInvalidPassword(String invalidPassword) throws Exception {
-        RegisterRequestDto request = new RegisterRequestDto(VALID_USERNAME, invalidPassword);
+        RegisterAuthRequestDto request = new RegisterAuthRequestDto(VALID_USERNAME, invalidPassword);
 
         given(authService.register(any(NewAuth.class))).willReturn(null);
 

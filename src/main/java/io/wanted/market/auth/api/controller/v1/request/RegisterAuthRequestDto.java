@@ -5,7 +5,7 @@ import io.wanted.market.auth.domain.auth.NewAuth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record RegisterRequestDto(
+public record RegisterAuthRequestDto(
         @NotBlank
         @Pattern(regexp = "^(?!.*\\s)(?=.*[a-zA-Z])(?=.*\\d).{8,49}$", message = "Username validation error")
         String username,

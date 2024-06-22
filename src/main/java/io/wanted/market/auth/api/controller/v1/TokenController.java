@@ -1,7 +1,7 @@
 package io.wanted.market.auth.api.controller.v1;
 
-import io.wanted.market.auth.api.controller.v1.request.ReissueRequestDto;
-import io.wanted.market.auth.api.controller.v1.response.TokenResponseDto;
+import io.wanted.market.auth.api.controller.v1.request.ReissueTokenRequestDto;
+import io.wanted.market.auth.api.controller.v1.response.ReissueTokenResponseDto;
 import io.wanted.market.auth.domain.token.TokenPair;
 import io.wanted.market.auth.domain.token.TokenService;
 import io.wanted.market.core.api.support.response.ApiResponse;
@@ -17,8 +17,8 @@ public class TokenController {
     private final TokenService tokenService;
 
     @PostMapping("/auth/reissue")
-    public ApiResponse<TokenResponseDto> reissue(@RequestBody @Valid ReissueRequestDto reissueRequestDto) {
-        TokenPair tokenPair = tokenService.reissue(reissueRequestDto.refreshToken());
-        return ApiResponse.success(TokenResponseDto.from(tokenPair));
+    public ApiResponse<ReissueTokenResponseDto> reissue(@RequestBody @Valid ReissueTokenRequestDto request) {
+        TokenPair tokenPair = tokenService.reissue(request.refreshToken());
+        return ApiResponse.success(ReissueTokenResponseDto.from(tokenPair));
     }
 }

@@ -1,7 +1,7 @@
 package io.wanted.market.auth.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
-import io.wanted.market.auth.api.controller.v1.request.ReissueRequestDto;
+import io.wanted.market.auth.api.controller.v1.request.ReissueTokenRequestDto;
 import io.wanted.market.auth.domain.token.TokenPair;
 import io.wanted.market.auth.domain.token.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ class TokenControllerTest extends RestDocsTest {
     @DisplayName("재발급 성공")
     @Test
     void reissue() throws Exception {
-        ReissueRequestDto request = new ReissueRequestDto("${REFRESH_TOKEN}");
+        ReissueTokenRequestDto request = new ReissueTokenRequestDto("${REFRESH_TOKEN}");
 
         given(tokenService.reissue(anyString())).willReturn(buildTokenPair());
 
@@ -90,7 +90,7 @@ class TokenControllerTest extends RestDocsTest {
             " ", // Only whitespace
     })
     void reissueWithInvalidRefreshToken(String invalidRefreshToken) throws Exception {
-        ReissueRequestDto request = new ReissueRequestDto(invalidRefreshToken);
+        ReissueTokenRequestDto request = new ReissueTokenRequestDto(invalidRefreshToken);
 
         given(tokenService.reissue(anyString())).willReturn(null);
 
