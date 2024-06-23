@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -36,9 +35,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private AuthErrorType resolve(AuthenticationException ex) {
         AuthErrorType authErrorType;
-        if (ex instanceof InsufficientAuthenticationException) {
-            authErrorType = AuthErrorType.NOT_FOUND_ERROR;
-        } else if (ex instanceof BadTokenException) {
+        if (ex instanceof BadTokenException) {
             authErrorType = AuthErrorType.TOKEN_INVALID_ERROR;
         } else if (ex instanceof BadCredentialsException) {
             authErrorType = AuthErrorType.AUTH_BAD_CREDENTIALS_ERROR;
