@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
     private final TokenService tokenService;
 
-    @PostMapping("/auth/reissue")
+    @PostMapping("/auth/token")
     public ApiResponse<ReissueTokenResponseDto> reissue(@RequestBody @Valid ReissueTokenRequestDto request) {
         TokenPair tokenPair = tokenService.reissue(request.refreshToken());
         return ApiResponse.success(ReissueTokenResponseDto.from(tokenPair));

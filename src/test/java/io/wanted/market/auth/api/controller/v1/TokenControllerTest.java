@@ -49,14 +49,14 @@ class TokenControllerTest extends RestDocsTest {
         given(tokenService.reissue(anyString())).willReturn(buildTokenPair());
 
         mockMvc.perform(
-                        post("/auth/reissue")
+                        post("/auth/token")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding(StandardCharsets.UTF_8)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("reissue",
+                .andDo(document("token",
                                 requestPreprocessor(),
                                 responsePreprocessor(),
                                 requestFields(
@@ -96,7 +96,7 @@ class TokenControllerTest extends RestDocsTest {
         given(tokenService.reissue(anyString())).willReturn(null);
 
         mockMvc.perform(
-                        post("/auth/reissue")
+                        post("/auth/token")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding(StandardCharsets.UTF_8)

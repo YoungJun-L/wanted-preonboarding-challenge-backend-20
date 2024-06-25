@@ -48,7 +48,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AllowedRequestMatcher.matchers()).permitAll()
+                        .requestMatchers(AllowedRequestMatcher.matchers()).anonymous()
                         .anyRequest().authenticated()
                 )
                 .addFilterAt(requestBodyUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
