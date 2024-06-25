@@ -11,26 +11,26 @@
 This is the Core API documentation.
 
 [[login]]
-=== Login API
+== Login API
 
 include::auth/login.adoc[]
 
 [[register]]
-=== Register API
+== Register API
 
 include::auth/register.adoc[]
 
 [[authenticate]]
-=== Authenticate API
+== Authenticate API
 
 include::auth/authenticate.adoc[]
 
 [[reissue]]
-=== Reissue API
+== Reissue API
 
-include::auth/reissue.adoc[]
+include::auth/token.adoc[]
 
 [[product]]
-=== Product API
+== Product API
 
 include::auth/product.adoc[]

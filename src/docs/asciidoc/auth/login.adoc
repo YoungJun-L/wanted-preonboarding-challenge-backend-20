@@ -1,3 +1,5 @@
+=== POST /auth/login
+
 Login 시 jwt 발급
 
 ==== Curl Request

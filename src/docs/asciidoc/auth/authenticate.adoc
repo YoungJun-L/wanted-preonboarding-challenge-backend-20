@@ -1,4 +1,6 @@
-Api 호출 시 필요
+=== 인증 방식
+
+Jwt 기반 인증
 
 ==== Curl Request
 

@@ -1,17 +1,41 @@
+=== POST /products
+
 제품 등록
 
 ==== Curl Request
 
-include::{snippets}/product/curl-request.adoc[]
+include::{snippets}/product-post/curl-request.adoc[]
 
 ==== Request Fields
 
-include::{snippets}/product/request-fields.adoc[]
+include::{snippets}/product-post/request-fields.adoc[]
 
 ==== Http Response
 
-include::{snippets}/product/http-response.adoc[]
+include::{snippets}/product-post/http-response.adoc[]
 
 ==== Response Fields
 
-include::{snippets}/product/response-fields.adoc[]
+include::{snippets}/product-post/response-fields.adoc[]
+
+'''
+
+=== GET /products
+
+제품 조회
+
+==== Curl Request
+
+include::{snippets}/product-get/curl-request.adoc[]
+
+==== Query Parameters
+
+include::{snippets}/product-get/query-parameters.adoc[]
+
+==== Http Response
+
+include::{snippets}/product-get/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/product-get/response-fields.adoc[]
