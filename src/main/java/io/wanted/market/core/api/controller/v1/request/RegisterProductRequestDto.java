@@ -1,10 +1,7 @@
 package io.wanted.market.core.api.controller.v1.request;
 
 import io.wanted.market.core.domain.product.NewProduct;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -13,11 +10,13 @@ public record RegisterProductRequestDto(
         @Size(min = 1, max = 99)
         String productName,
 
-        @Min(1)
-        @Max(99_999_999)
+        @NotNull
+        @Min(1_000)
+        @Digits(integer = 8, fraction = 0)
         BigDecimal salePrice,
 
-        @Min(1)
+        @NotNull
+        @Positive
         @Max(999)
         Long quantity
 ) {
