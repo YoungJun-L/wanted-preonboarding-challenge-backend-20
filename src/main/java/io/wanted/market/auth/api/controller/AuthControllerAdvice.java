@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -43,6 +44,7 @@ public class AuthControllerAdvice {
             HttpMessageNotReadableException.class,
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
+            HandlerMethodValidationException.class,
     })
     public ResponseEntity<AuthResponse<?>> handleBadRequest(Exception ex) {
         log.info("Bad Request: {}", ex.getMessage());
