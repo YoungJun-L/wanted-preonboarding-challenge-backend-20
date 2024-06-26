@@ -24,20 +24,33 @@ public class ProductEntity extends BaseEntity {
 
     private BigDecimal price;
 
-    private Long quantity;
+    private Long totalQuantity;
+
+    private Long stockQuantity;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    public ProductEntity(Long sellerId, String name, BigDecimal price, Long quantity) {
+    public ProductEntity(Long sellerId, String name, BigDecimal price, Long totalQuantity) {
         this.sellerId = sellerId;
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.totalQuantity = totalQuantity;
+        this.stockQuantity = totalQuantity;
         this.status = ProductStatus.SALE;
     }
 
     public Product toProduct() {
-        return new Product(getId(), sellerId, name, price, quantity, getCreatedAt(), status);
+        return new Product(
+                getId(),
+                sellerId,
+                name,
+                price,
+                totalQuantity,
+                stockQuantity,
+                getCreatedAt(),
+                getUpdatedAt(),
+                status
+        );
     }
 }
