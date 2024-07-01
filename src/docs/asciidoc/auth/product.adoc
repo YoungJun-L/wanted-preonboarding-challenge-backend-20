@@ -39,3 +39,29 @@ include::{snippets}/product-get/http-response.adoc[]
 ==== Response Fields
 
 include::{snippets}/product-get/response-fields.adoc[]
+
+'''
+
+=== GET /products/\{productId}
+
+제품 상세 조회
+
+구매자가 조회 시 해당 제품에서 자신의 거래내역을 추가하여 표시
+
+판매자가 조회 시 해당 제품에서 모든 거래내역을 추가하여 표시
+
+==== Curl Request
+
+include::{snippets}/product-details-get/curl-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/product-details-get/path-parameters.adoc[]
+
+==== Http Response
+
+include::{snippets}/product-details-get/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/product-details-get/response-fields.adoc[]

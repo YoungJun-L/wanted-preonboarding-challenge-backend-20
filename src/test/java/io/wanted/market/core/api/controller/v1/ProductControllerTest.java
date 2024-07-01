@@ -2,6 +2,9 @@ package io.wanted.market.core.api.controller.v1;
 
 import io.wanted.market.RestDocsTest;
 import io.wanted.market.core.api.controller.v1.request.RegisterProductRequestDto;
+import io.wanted.market.core.domain.order.OrderHistory;
+import io.wanted.market.core.domain.order.OrderService;
+import io.wanted.market.core.domain.order.OrderStatus;
 import io.wanted.market.core.domain.product.*;
 import io.wanted.market.core.domain.support.cursor.Cursor;
 import io.wanted.market.core.domain.support.cursor.SortType;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.math.BigDecimal;
@@ -21,12 +25,12 @@ import java.util.List;
 import static io.wanted.market.RestDocsUtils.requestPreprocessor;
 import static io.wanted.market.RestDocsUtils.responsePreprocessor;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,9 +39,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProductControllerTest extends RestDocsTest {
     private final ProductService productService = mock(ProductService.class);
 
+    private final OrderService orderService = mock(OrderService.class);
+
     @Override
     protected Object initController() {
-        return new ProductController(productService);
+        return new ProductController(productService, orderService);
     }
 
     @DisplayName("제품 등록 성공")
@@ -241,6 +247,110 @@ class ProductControllerTest extends RestDocsTest {
                                                 .description("다음 페이지 커서"),
                                         fieldWithPath("data.paging.hasNext").type(JsonFieldType.BOOLEAN)
                                                 .description("다음 페이지 존재 여부"),
+                                        fieldWithPath("error").type(JsonFieldType.NULL)
+                                                .ignored()
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("제품 상세 조회 성공")
+    @Test
+    void retrieveProductDetails() throws Exception {
+        Product product = new Product(
+                1L,
+                1L,
+                "수박",
+                BigDecimal.valueOf(20_000),
+                100L,
+                100L,
+                LocalDateTime.of(2024, 6, 23, 15, 29),
+                LocalDateTime.of(2024, 6, 23, 15, 29),
+                ProductStatus.SALE
+        );
+        List<OrderHistory> orderHistories = List.of(
+                new OrderHistory(
+                        1L,
+                        1L,
+                        2L,
+                        "buyerA",
+                        1L,
+                        "seller",
+                        1L,
+                        "수박",
+                        BigDecimal.valueOf(25_000),
+                        OrderStatus.APPROVED,
+                        LocalDateTime.of(2024, 6, 24, 20, 30)
+                ),
+                new OrderHistory(
+                        1L,
+                        1L,
+                        2L,
+                        "buyerA",
+                        1L,
+                        "seller",
+                        1L,
+                        "수박",
+                        BigDecimal.valueOf(20_000),
+                        OrderStatus.CANCELED,
+                        LocalDateTime.of(2024, 6, 25, 8, 0)
+                )
+        );
+
+        given(productService.retrieveProduct(anyLong())).willReturn(product);
+        given(orderService.retrieveOrderHistories(any(User.class), any(Product.class))).willReturn(orderHistories);
+
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.get("/products/{productId}", product.id())
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("product-details-get",
+                                requestPreprocessor(),
+                                responsePreprocessor(),
+                                pathParameters(
+                                        parameterWithName("productId").description("제품 id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").type(JsonFieldType.STRING)
+                                                .description("status"),
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                                .description("data"),
+                                        fieldWithPath("data.product").type(JsonFieldType.OBJECT)
+                                                .description("제품 상세 정보"),
+                                        fieldWithPath("data.product.productId").type(JsonFieldType.NUMBER)
+                                                .description("제품 id"),
+                                        fieldWithPath("data.product.sellerId").type(JsonFieldType.NUMBER)
+                                                .description("판매자 id"),
+                                        fieldWithPath("data.product.name").type(JsonFieldType.STRING)
+                                                .description("제품 이름"),
+                                        fieldWithPath("data.product.price").type(JsonFieldType.NUMBER)
+                                                .description("제품 가격"),
+                                        fieldWithPath("data.product.totalQuantity").type(JsonFieldType.NUMBER)
+                                                .description("전체 판매 수량"),
+                                        fieldWithPath("data.product.stockQuantity").type(JsonFieldType.NUMBER)
+                                                .description("남은 판매 수량"),
+                                        fieldWithPath("data.product.registeredAt").type(JsonFieldType.STRING)
+                                                .description("제품 등록 날짜"),
+                                        fieldWithPath("data.product.updatedAt").type(JsonFieldType.STRING)
+                                                .description("제품 수정 날짜"),
+                                        fieldWithPath("data.product.status").type(JsonFieldType.STRING)
+                                                .description("판매 상태, SALE(판매중) | RESERVED(예약됨) | OUT_OF_STOCK(재고 없음)"),
+                                        fieldWithPath("data.histories").type(JsonFieldType.ARRAY)
+                                                .description("제품 거래 내역")
+                                                .optional(),
+                                        fieldWithPath("data.histories[].orderId").type(JsonFieldType.NUMBER)
+                                                .description("주문 id"),
+                                        fieldWithPath("data.histories[].buyerId").type(JsonFieldType.NUMBER)
+                                                .description("구매자 id"),
+                                        fieldWithPath("data.histories[].buyerUsername").type(JsonFieldType.STRING)
+                                                .description("구매자 이름"),
+                                        fieldWithPath("data.histories[].price").type(JsonFieldType.NUMBER)
+                                                .description("주문 당시 가격"),
+                                        fieldWithPath("data.histories[].status").type(JsonFieldType.STRING)
+                                                .description("주문 상태"),
+                                        fieldWithPath("data.histories[].createdAt").type(JsonFieldType.STRING)
+                                                .description("주문 날짜"),
                                         fieldWithPath("error").type(JsonFieldType.NULL)
                                                 .ignored()
                                 )

@@ -21,4 +21,8 @@ public class ProductService {
     public List<Product> retrieveProducts(Cursor cursor) {
         return productReader.read(cursor);
     }
+
+    public Product retrieveProduct(Long productId) {
+        return productReader.read(productId);
+    }
 }

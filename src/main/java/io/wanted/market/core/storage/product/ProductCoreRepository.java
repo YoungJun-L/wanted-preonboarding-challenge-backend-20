@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
@@ -43,5 +44,10 @@ public class ProductCoreRepository implements ProductRepository {
         return productEntities.stream()
                 .map(ProductEntity::toProduct)
                 .toList();
+    }
+
+    @Override
+    public Optional<Product> read(Long productId) {
+        return productJpaRepository.findById(productId).map(ProductEntity::toProduct);
     }
 }
