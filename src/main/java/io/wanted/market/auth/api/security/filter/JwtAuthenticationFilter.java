@@ -63,6 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return Arrays.stream(AllowedRequestMatcher.matchers()).anyMatch(m -> m.matches(request));
+        return Arrays.stream(NotFilterRequestMatcher.matchers()).anyMatch(m -> m.matches(request));
     }
 }

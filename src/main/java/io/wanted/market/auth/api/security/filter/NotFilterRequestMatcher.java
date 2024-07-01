@@ -8,22 +8,21 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.Arrays;
 
 @Getter
-public enum AllowedRequestMatcher {
+public enum NotFilterRequestMatcher {
     REGISTER(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/register")),
     REISSUE(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/auth/token")),
-    PRODUCT(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**")),
     H2_CONSOLE(AntPathRequestMatcher.antMatcher("/h2-console/**")),
     API_DOCS(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/docs/**")),
     HEALTH(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/health"));
 
     private final RequestMatcher matcher;
 
-    AllowedRequestMatcher(RequestMatcher matcher) {
+    NotFilterRequestMatcher(RequestMatcher matcher) {
         this.matcher = matcher;
     }
 
     public static RequestMatcher[] matchers() {
-        return Arrays.stream(AllowedRequestMatcher.values())
+        return Arrays.stream(NotFilterRequestMatcher.values())
                 .map(a -> a.matcher)
                 .toArray(RequestMatcher[]::new);
     }
