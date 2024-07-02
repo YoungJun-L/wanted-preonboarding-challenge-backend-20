@@ -35,7 +35,7 @@ public record Auth(Long id, String username, String password, AuthStatus status)
         return status.equals(AuthStatus.ENABLED);
     }
 
-    public void validate() {
+    public void verify() {
         if (!isAccountNonLocked()) {
             throw new AuthException(AuthErrorType.AUTH_LOCKED_ERROR);
         }

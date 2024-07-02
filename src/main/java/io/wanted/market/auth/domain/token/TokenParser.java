@@ -27,7 +27,7 @@ public class TokenParser {
         }
     }
 
-    public void validate(String token) {
+    public void verify(String token) {
         try {
             jwtParser.parseSignedClaims(token);
         } catch (ExpiredJwtException ex) {
