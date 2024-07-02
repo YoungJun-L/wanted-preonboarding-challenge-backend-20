@@ -20,11 +20,11 @@ public class OrderEntity extends BaseEntity {
     private Long productId;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     public OrderEntity(Long buyerId, Long productId) {
         this.buyerId = buyerId;
         this.productId = productId;
-        this.orderStatus = OrderStatus.RESERVED;
+        this.status = OrderStatus.NEW;
     }
 }

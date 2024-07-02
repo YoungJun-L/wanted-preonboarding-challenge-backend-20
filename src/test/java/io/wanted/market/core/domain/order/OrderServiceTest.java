@@ -2,7 +2,7 @@ package io.wanted.market.core.domain.order;
 
 import io.wanted.market.ContextTest;
 import io.wanted.market.core.domain.product.Product;
-import io.wanted.market.core.domain.product.ProductStatus;
+import io.wanted.market.core.domain.product.ProductState;
 import io.wanted.market.core.domain.user.User;
 import io.wanted.market.core.domain.user.UserInfo;
 import io.wanted.market.core.storage.order.OrderHistoryEntity;
@@ -52,7 +52,7 @@ class OrderServiceTest extends ContextTest {
                 10L,
                 LocalDateTime.of(2023, 6, 23, 15, 29),
                 LocalDateTime.of(2023, 6, 23, 15, 29),
-                ProductStatus.SALE
+                ProductState.AVAILABLE
         );
 
         List<OrderHistoryEntity> orderHistoryEntities = List.of(
@@ -106,7 +106,7 @@ class OrderServiceTest extends ContextTest {
                 10L,
                 LocalDateTime.of(2023, 6, 23, 15, 29),
                 LocalDateTime.of(2023, 6, 23, 15, 29),
-                ProductStatus.SALE
+                ProductState.AVAILABLE
         );
 
         List<OrderHistoryEntity> orderHistoryEntities = List.of(

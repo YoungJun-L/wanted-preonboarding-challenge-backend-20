@@ -35,7 +35,7 @@ public class OrderHistoryEntity extends BaseEntity {
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     public OrderHistoryEntity(
             Long orderId,
@@ -46,7 +46,7 @@ public class OrderHistoryEntity extends BaseEntity {
             Long productId,
             String productName,
             BigDecimal price,
-            OrderStatus orderStatus
+            OrderStatus status
     ) {
         this.orderId = orderId;
         this.buyerId = buyerId;
@@ -56,7 +56,7 @@ public class OrderHistoryEntity extends BaseEntity {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
-        this.orderStatus = orderStatus;
+        this.status = status;
     }
 
     public OrderHistory toOrderHistory() {
@@ -70,7 +70,7 @@ public class OrderHistoryEntity extends BaseEntity {
                 productId,
                 productName,
                 price,
-                orderStatus,
+                status,
                 getCreatedAt()
         );
     }

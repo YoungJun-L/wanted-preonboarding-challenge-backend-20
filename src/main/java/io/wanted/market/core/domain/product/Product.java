@@ -15,7 +15,7 @@ public record Product(
         Long stockQuantity,
         LocalDateTime registeredAt,
         LocalDateTime updatedAt,
-        ProductStatus status
+        ProductState state
 ) {
     public Long updatedAtTimeStamp() {
         return updatedAt.atZone(ZoneId.systemDefault()).toEpochSecond();

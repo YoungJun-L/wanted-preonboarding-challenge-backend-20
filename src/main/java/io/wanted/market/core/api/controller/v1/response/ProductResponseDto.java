@@ -1,7 +1,7 @@
 package io.wanted.market.core.api.controller.v1.response;
 
 import io.wanted.market.core.domain.product.Product;
-import io.wanted.market.core.domain.product.ProductStatus;
+import io.wanted.market.core.domain.product.ProductState;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ public record ProductResponseDto(
         Long stockQuantity,
         LocalDateTime registeredAt,
         LocalDateTime updatedAt,
-        ProductStatus status
+        ProductState state
 ) {
     public static ProductResponseDto from(Product product) {
         return new ProductResponseDto(
@@ -28,7 +28,7 @@ public record ProductResponseDto(
                 product.stockQuantity(),
                 product.registeredAt(),
                 product.updatedAt(),
-                product.status()
+                product.state()
         );
     }
 

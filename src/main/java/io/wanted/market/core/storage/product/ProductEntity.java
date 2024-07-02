@@ -1,7 +1,7 @@
 package io.wanted.market.core.storage.product;
 
 import io.wanted.market.core.domain.product.Product;
-import io.wanted.market.core.domain.product.ProductStatus;
+import io.wanted.market.core.domain.product.ProductState;
 import io.wanted.market.core.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +29,7 @@ public class ProductEntity extends BaseEntity {
     private Long stockQuantity;
 
     @Enumerated(EnumType.STRING)
-    private ProductStatus status;
+    private ProductState state;
 
     public ProductEntity(Long sellerId, String name, BigDecimal price, Long totalQuantity) {
         this.sellerId = sellerId;
@@ -37,7 +37,7 @@ public class ProductEntity extends BaseEntity {
         this.price = price;
         this.totalQuantity = totalQuantity;
         this.stockQuantity = totalQuantity;
-        this.status = ProductStatus.SALE;
+        this.state = ProductState.AVAILABLE;
     }
 
     public Product toProduct() {
@@ -50,7 +50,7 @@ public class ProductEntity extends BaseEntity {
                 stockQuantity,
                 getCreatedAt(),
                 getUpdatedAt(),
-                status
+                state
         );
     }
 }

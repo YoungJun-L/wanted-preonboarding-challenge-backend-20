@@ -3,7 +3,7 @@ package io.wanted.market.core.storage.product;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.wanted.market.core.domain.product.ProductStatus;
+import io.wanted.market.core.domain.product.ProductState;
 import io.wanted.market.core.domain.support.cursor.SortType;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -30,7 +30,7 @@ public class ProductQueryRepository {
                 .selectFrom(productEntity)
                 .where(
                         updatedAtLtOrGt(cursor, sortType),
-                        productEntity.status.eq(ProductStatus.SALE)
+                        productEntity.state.eq(ProductState.AVAILABLE)
                 )
                 .orderBy(updatedAtOrderSpecifier(sortType))
                 .limit(limit)
@@ -61,7 +61,7 @@ public class ProductQueryRepository {
                 .selectFrom(productEntity)
                 .where(
                         priceLtOrGt(cursor, sortType),
-                        productEntity.status.eq(ProductStatus.SALE)
+                        productEntity.state.eq(ProductState.AVAILABLE)
                 )
                 .orderBy(priceOrderSpecifier(sortType))
                 .limit(limit)

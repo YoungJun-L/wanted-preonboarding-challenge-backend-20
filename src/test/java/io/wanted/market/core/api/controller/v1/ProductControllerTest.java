@@ -63,7 +63,7 @@ class ProductControllerTest extends RestDocsTest {
                 100L,
                 LocalDateTime.of(2023, 6, 23, 15, 29),
                 LocalDateTime.of(2023, 6, 23, 15, 29),
-                ProductStatus.SALE
+                ProductState.AVAILABLE
         );
 
         given(productService.createProduct(any(User.class), any(NewProduct.class))).willReturn(product);
@@ -181,7 +181,7 @@ class ProductControllerTest extends RestDocsTest {
                         100L,
                         LocalDateTime.of(2024, 6, 23, 15, 29),
                         LocalDateTime.of(2024, 6, 23, 15, 29),
-                        ProductStatus.SALE
+                        ProductState.AVAILABLE
                 ),
                 new Product(
                         2L,
@@ -192,7 +192,7 @@ class ProductControllerTest extends RestDocsTest {
                         100L,
                         LocalDateTime.of(2024, 6, 25, 22, 53),
                         LocalDateTime.of(2024, 6, 25, 22, 53),
-                        ProductStatus.SALE
+                        ProductState.AVAILABLE
                 )
         );
 
@@ -239,7 +239,7 @@ class ProductControllerTest extends RestDocsTest {
                                                 .description("제품 등록 날짜"),
                                         fieldWithPath("data.content[].updatedAt").type(JsonFieldType.STRING)
                                                 .description("제품 수정 날짜"),
-                                        fieldWithPath("data.content[].status").type(JsonFieldType.STRING)
+                                        fieldWithPath("data.content[].state").type(JsonFieldType.STRING)
                                                 .description("판매 상태, SALE(판매중) | RESERVED(예약됨) | OUT_OF_STOCK(재고 없음)"),
                                         fieldWithPath("data.paging").type(JsonFieldType.OBJECT)
                                                 .ignored(),
@@ -266,7 +266,7 @@ class ProductControllerTest extends RestDocsTest {
                 100L,
                 LocalDateTime.of(2024, 6, 23, 15, 29),
                 LocalDateTime.of(2024, 6, 23, 15, 29),
-                ProductStatus.SALE
+                ProductState.AVAILABLE
         );
         List<OrderHistory> orderHistories = List.of(
                 new OrderHistory(
@@ -334,7 +334,7 @@ class ProductControllerTest extends RestDocsTest {
                                                 .description("제품 등록 날짜"),
                                         fieldWithPath("data.product.updatedAt").type(JsonFieldType.STRING)
                                                 .description("제품 수정 날짜"),
-                                        fieldWithPath("data.product.status").type(JsonFieldType.STRING)
+                                        fieldWithPath("data.product.state").type(JsonFieldType.STRING)
                                                 .description("판매 상태, SALE(판매중) | RESERVED(예약됨) | OUT_OF_STOCK(재고 없음)"),
                                         fieldWithPath("data.histories").type(JsonFieldType.ARRAY)
                                                 .description("제품 거래 내역")
