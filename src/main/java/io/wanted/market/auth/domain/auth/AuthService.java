@@ -2,10 +2,10 @@ package io.wanted.market.auth.domain.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class AuthService implements UserDetailsService {
     private final AuthReader authReader;
 
