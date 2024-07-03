@@ -22,15 +22,16 @@ public class ProductCoreRepository implements ProductRepository {
 
     @Override
     public Product write(User user, NewProduct newProduct) {
-        ProductEntity savedProduct = productJpaRepository.save(
+        ProductEntity savedProductEntity = productJpaRepository.save(
                 new ProductEntity(
                         user.id(),
                         newProduct.name(),
                         newProduct.price(),
+                        newProduct.quantity(),
                         newProduct.quantity()
                 )
         );
-        return savedProduct.toProduct();
+        return savedProductEntity.toProduct();
     }
 
     @Override

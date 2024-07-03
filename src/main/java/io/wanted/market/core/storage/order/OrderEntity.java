@@ -1,5 +1,6 @@
 package io.wanted.market.core.storage.order;
 
+import io.wanted.market.core.domain.order.Order;
 import io.wanted.market.core.domain.order.OrderStatus;
 import io.wanted.market.core.storage.support.BaseEntity;
 import jakarta.persistence.Entity;
@@ -26,5 +27,16 @@ public class OrderEntity extends BaseEntity {
         this.buyerId = buyerId;
         this.productId = productId;
         this.status = OrderStatus.NEW;
+    }
+
+    public Order toOrder() {
+        return new Order(
+                getId(),
+                buyerId,
+                productId,
+                status,
+                getCreatedAt(),
+                getUpdatedAt()
+        );
     }
 }

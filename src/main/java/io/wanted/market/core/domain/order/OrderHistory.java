@@ -9,7 +9,6 @@ public record OrderHistory(
         Long buyerId,
         String buyerUsername,
         Long sellerId,
-        String sellerUsername,
         Long productId,
         String productName,
         BigDecimal price,

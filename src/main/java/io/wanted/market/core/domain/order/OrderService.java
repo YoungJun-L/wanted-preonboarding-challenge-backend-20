@@ -10,9 +10,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class OrderService {
+    private final OrderWriter orderWriter;
+
     private final OrderHistoryReader orderHistoryReader;
 
     public List<OrderHistory> retrieveOrderHistories(User user, Product product) {
         return orderHistoryReader.read(user, product);
+    }
+
+    public Order createOrder(User user, NewOrder newOrder) {
+        return orderWriter.write(user, newOrder);
     }
 }

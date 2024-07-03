@@ -11,7 +11,8 @@ public enum CoreErrorType {
     NOT_FOUND_ERROR(CoreErrorCode.E4040, "해당 정보를 찾을 수 없습니다.", LogLevel.INFO),
 
     // product
-    PRODUCT_NOT_FOUND_ERROR(CoreErrorCode.E4041, "해당 제품을 찾을 수 없습니다.", LogLevel.INFO);
+    PRODUCT_NOT_FOUND_ERROR(CoreErrorCode.E4041, "해당 제품을 찾을 수 없습니다.", LogLevel.INFO),
+    PRODUCT_OUT_OF_STOCK_ERROR(CoreErrorCode.E4042, "남은 재고가 없습니다.", LogLevel.INFO);
 
     private final CoreErrorCode code;
 

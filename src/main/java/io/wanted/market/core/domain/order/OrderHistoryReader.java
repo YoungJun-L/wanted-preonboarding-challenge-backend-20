@@ -13,7 +13,7 @@ public class OrderHistoryReader {
     private final OrderRepository orderRepository;
 
     public List<OrderHistory> read(User user, Product product) {
-        if (product.isSeller(user)) {
+        if (product.isSeller(user.id())) {
             return orderRepository.readHistories(product);
         }
         return orderRepository.readUserHistories(user, product);

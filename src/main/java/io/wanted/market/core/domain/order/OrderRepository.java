@@ -11,4 +11,6 @@ public interface OrderRepository {
     List<OrderHistory> readHistories(Product product);
 
     List<OrderHistory> readUserHistories(User user, Product product);
+
+    Order write(User user, NewOrder newOrder, Product product);
 }

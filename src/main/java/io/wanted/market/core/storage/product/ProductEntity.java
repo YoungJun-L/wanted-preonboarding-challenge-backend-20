@@ -31,12 +31,12 @@ public class ProductEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProductState state;
 
-    public ProductEntity(Long sellerId, String name, BigDecimal price, Long totalQuantity) {
+    public ProductEntity(Long sellerId, String name, BigDecimal price, Long totalQuantity, Long stockQuantity) {
         this.sellerId = sellerId;
         this.name = name;
         this.price = price;
         this.totalQuantity = totalQuantity;
-        this.stockQuantity = totalQuantity;
+        this.stockQuantity = stockQuantity;
         this.state = ProductState.AVAILABLE;
     }
 
@@ -52,5 +52,14 @@ public class ProductEntity extends BaseEntity {
                 getUpdatedAt(),
                 state
         );
+    }
+
+    public void update(Product product) {
+        sellerId = product.sellerId();
+        name = product.name();
+        price = product.price();
+        totalQuantity = product.totalQuantity();
+        stockQuantity = product.stockQuantity();
+        state = product.state();
     }
 }

@@ -26,8 +26,6 @@ public class OrderHistoryEntity extends BaseEntity {
 
     private Long sellerId;
 
-    private String sellerUsername;
-
     private Long productId;
 
     private String productName;
@@ -42,7 +40,6 @@ public class OrderHistoryEntity extends BaseEntity {
             Long buyerId,
             String buyerUsername,
             Long sellerId,
-            String sellerUsername,
             Long productId,
             String productName,
             BigDecimal price,
@@ -52,7 +49,6 @@ public class OrderHistoryEntity extends BaseEntity {
         this.buyerId = buyerId;
         this.buyerUsername = buyerUsername;
         this.sellerId = sellerId;
-        this.sellerUsername = sellerUsername;
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -66,7 +62,6 @@ public class OrderHistoryEntity extends BaseEntity {
                 buyerId,
                 buyerUsername,
                 sellerId,
-                sellerUsername,
                 productId,
                 productName,
                 price,

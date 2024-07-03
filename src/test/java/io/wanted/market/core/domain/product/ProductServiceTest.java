@@ -68,9 +68,9 @@ class ProductServiceTest extends ContextTest {
 
     private List<ProductEntity> buildProductEntities() {
         return List.of(
-                new ProductEntity(1L, "productA", BigDecimal.valueOf(15_000), 10L),
-                new ProductEntity(1L, "productB", BigDecimal.valueOf(5_000), 20L),
-                new ProductEntity(2L, "productC", BigDecimal.valueOf(200_000), 100L)
+                new ProductEntity(1L, "productA", BigDecimal.valueOf(15_000), 10L, 10L),
+                new ProductEntity(1L, "productB", BigDecimal.valueOf(5_000), 20L, 20L),
+                new ProductEntity(2L, "productC", BigDecimal.valueOf(200_000), 100L, 100L)
         );
     }
 
